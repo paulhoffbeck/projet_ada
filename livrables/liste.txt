@@ -1,0 +1,22 @@
+Les documents à rendre sont :
+— la spécification des modules en Ada (et donc la définition des principaux types
+dans la partie privée) (extension .ads),
+— les programmes de test (test_*.adb),
+— une archive contenant le code source final de vos programmes.
+— un rapport (rapport.pdf) contenant au moins :
+    — un résumé qui décrit l’objectif et le contenu du rapport (10 lignes maxi),
+    — une introduction qui présente le problème traité 3 et le plan du document
+    — l’architecture de l’application en modules
+    — la présentation des principaux choix réalisés
+    — la présentation des principaux algorithmes et types de données
+    — la démarche adoptée pour tester le programme
+    — les difficultés rencontrées et les solutions adoptées en justifiant vos choix (en
+    particulier quand vous avez envisagé plusieurs solutions)
+    — l’organisation du groupe (qui a fait quoi, etc.)
+    — un bilan technique donnant un état d’avancement du projet et les perspectives
+    d’amélioration / évolution
+    — une bilan personnel et individuel : intérêt, temps passé, temps passé à la concep-
+    tion, temps passé à l’implantation, temps passé à la mise au point, temps passé
+    sur le rapport, enseignements tirés de ce projet, etc.
+— Un manuel utilisateur (manuel.pdf) qui décrit comment utiliser les programmes
+développés et qui est illustré avec des copies d’écran.
