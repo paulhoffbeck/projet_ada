@@ -15,7 +15,7 @@ package SGF is
    end record;
 
    type T_Liste_Contenu;
-   type P_Liste_Contenu is access all Liste_Contenu;
+   type P_Liste_Contenu is access all T_Liste_Contenu;
 
    type T_Liste_Contenu is record
       Est_Fichier : Boolean;
