@@ -11,7 +11,7 @@ package SGF is
    type T_Fichier is record
       Nom    : String;
       Taille : Integer;
-      Droits : Integer := 2#000#; -- read, write and exec rights
+      Droits : Integer := 2#000#; -- Droits : read, write, exec
    end record;
 
    type Liste_Contenu;
