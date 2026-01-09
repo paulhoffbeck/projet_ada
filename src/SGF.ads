@@ -1,8 +1,6 @@
 package SGF is
 
    type Indexeur is private;
-   type Droits is (Lecture, Ecriture, Execution, Aucun);
-   type Liste_Droits is array (Positive range <>) of Droits;
 
    type T_Fichier;
    type T_Dossier;
@@ -13,7 +11,7 @@ package SGF is
    type T_Fichier is record
       Nom    : String;
       Taille : Integer;
-      Droits : Liste_Droits (1 .. 3);
+      Droits : Integer := 2#000#;
    end record;
 
    type Liste_Contenu;
