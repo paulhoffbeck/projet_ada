@@ -26,7 +26,7 @@ package SGF is
 
    type T_Dossier is record
       Nom           : String;
-      Droits        : Liste_Droits (1 .. 3);
+      Droits        : Integer := 2#000#;
       Dossier_Parent : P_Dossier;
       Contenu       : P_Liste_Contenu;
    end record;
@@ -44,7 +44,7 @@ package SGF is
 
    -- Création d’un fichier
    procedure Touch (Dos : in out T_Dossier; Fi : out T_Fichier;
-                    Nom : in String; Droits : in Liste_Droits);
+                    Nom : in String; Droits : in Integer);
    -- pre  : Dossier initialisé
    -- post : Ajoute un fichier au contenu du dossier
 
@@ -56,7 +56,7 @@ package SGF is
 
    -- Création d’un répertoire
    procedure Mkdir (Dos : in out T_Dossier; Rep : out T_Dossier;
-                    Nom : in String; Droits : in Liste_Droits;
+                    Nom : in String; Droits : in Integer;
                     Parent : in P_Dossier);
    -- pre  : Dossier initialisé
    -- post : Ajoute un dossier vide
