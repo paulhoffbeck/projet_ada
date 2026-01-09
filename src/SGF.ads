@@ -14,10 +14,10 @@ package SGF is
       Droits : Integer := 2#000#; -- Droits : read, write, exec 
    end record;
 
-   type Liste_Contenu;
+   type T_Liste_Contenu;
    type P_Liste_Contenu is access all Liste_Contenu;
 
-   type Liste_Contenu is record
+   type T_Liste_Contenu is record
       Est_Fichier : Boolean;
       Fichier     : P_Fichier;
       Dossier     : P_Dossier;
