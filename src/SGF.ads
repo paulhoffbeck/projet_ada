@@ -26,7 +26,7 @@ package SGF is
 
    type T_Dossier is record
       Nom           : String;
-      Droits        : Liste_Droits (1 .. 3);
+      Droits        : Integer := 2#000#;
       Dossier_Parent : P_Dossier;
       Contenu       : P_Liste_Contenu;
    end record;
