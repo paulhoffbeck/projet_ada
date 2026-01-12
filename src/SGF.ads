@@ -14,10 +14,10 @@ package SGF is
       Droits : Integer := 2#000#; -- Droits : read, write, exec 
    end record;
 
-   type Liste_Contenu;
-   type P_Liste_Contenu is access all Liste_Contenu;
+   type T_Liste_Contenu;
+   type P_Liste_Contenu is access all T_Liste_Contenu;
 
-   type Liste_Contenu is record
+   type T_Liste_Contenu is record
       Est_Fichier : Boolean;
       Fichier     : P_Fichier;
       Dossier     : P_Dossier;
@@ -66,15 +66,25 @@ package SGF is
    -- pre  : Dossier initialisé
    -- post : Change le répertoire courant
 
+   -- Affichage du contenu du dossier actuel (ls)
+   procedure Ls;
+   -- pre  : Dossier initialisé
+   -- post : Affiche le contenu du répertoire actuel
+
    -- Affichage du contenu d’un dossier (ls)
-   procedure Ls (Dos : in T_Dossier; Chemin : in String);
+   procedure Ls (Chemin : in String);
    -- pre  : Dossier initialisé
    -- post : Affiche le contenu du répertoire désigné
 
    -- Affichage récursif (ls -r)
+   procedure Lsr;
+   -- pre  : Dossier initialisé
+   -- post : Affiche récursivement tous les fichiers et sous-répertoires du dossier actuel
+
+   -- Affichage récursif (ls -r)
    procedure Lsr (Dos : in T_Dossier);
    -- pre  : Dossier initialisé
-   -- post : Affiche récursivement tous les fichiers et sous-répertoires
+   -- post : Affiche récursivement tous les fichiers et sous-répertoires du dossier désigné
 
    -- Suppression d’un fichier
    procedure Rm (Dos : in out T_Dossier; Index : in Indexeur);
