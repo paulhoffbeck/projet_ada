@@ -3,12 +3,14 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body sgf is 
 
-procedure Init_SGF (Dos : out T_Dossier) is
+procedure Init_SGF is
 begin
-   Dos.Nom := To_Unbounded_String("/");
-   Dos.Droits := 2#111#; -- read, write, exec
-   Dos.Dossier_Parent := null;
-   Dos.Contenu := null;
+   Racine.Nom := To_Unbounded_String("/");
+   Racine.Droits := 2#111#; -- read, write, exec
+   Racine.Dossier_Parent := null;
+   Racine.Contenu := null;
+
+   Actuel := Racine'Access;
 end Init_SGF;
 
 procedure Ls is
@@ -44,9 +46,35 @@ procedure Pwd is
       end if;
    end Afficher_Chemin;
 
+procedure Touch (Fi: out T_Fichier; Nom : in String; Droits : in Integer) is
+   Li_cont : P_Liste_Contenu;
 begin
-   Afficher_Chemin (Actuel);
-   New_Line;
-end Pwd;
+   Fi.Nom := To_Unbounded_String(Nom);
+   Fi.Taille := 0;
+   Fi.Droits := Droits;
+
+   Li_cont := new T_Liste_Contenu;
+   Li_cont.Est_Fichier := True;
+   Li_cont.Fichier := new T_Fichier'(Fi);
+   Li_cont.Dossier := null;
+   Li_cont.Suivant := null;
+
+   if Actuel.all.Contenu = null then
+      Actuel.all.Contenu := Li_cont;
+   else
+      declare
+         C : P_Liste_Contenu := Actuel.all.Contenu;
+      begin
+         while C.all.Suivant /= null loop
+            C := C.all.Suivant;
+         end loop;
+         C.all.Suivant := Li_cont;
+      end;
+   end if;
+end Touch;
+
+
+
+
 
 end sgf;
