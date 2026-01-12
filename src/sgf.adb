@@ -3,50 +3,46 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body sgf is 
 
-procedure Init_SGF (Dos : out T_Dossier) is
+procedure Init_SGF is
 begin
-   Dos.Nom := To_Unbounded_String("/");
-   Dos.Droits := 2#111#; -- read, write, exec
-   Dos.Dossier_Parent := null;
-   Dos.Contenu := null;
+   Racine.Nom := To_Unbounded_String("/");
+   Racine.Droits := 2#111#; -- read, write, exec
+   Racine.Dossier_Parent := null;
+   Racine.Contenu := null;
+
+   Actuel := Racine'Access;
 end Init_SGF;
 
-procedure Ls is
-conten : P_Dossier;
+
+procedure Touch (Fi: out T_Fichier; Nom : in String; Droits : in Integer) is
+   Li_cont : P_Liste_Contenu;
 begin
-   conten := actuel.all.contenu;
-   while conten /= null loop
-      if conten.all.Est_Fichier = True then
-         Put (conten.all.Fichier.all.Nom);
-         Put (conten.all.Fichier.all.Taille);
-         Put (conten.all.Fichier.all.Droits);
-      else
-         Put (conten.all.Dossier.all.Nom);
-         Put (conten.all.Dossier.all.Droits);
-      end if;
-      conten := conten.all.Suivant;
-   end loop;
-end Ls;
+   Fi.Nom := To_Unbounded_String(Nom);
+   Fi.Taille := 0;
+   Fi.Droits := Droits;
 
-procedure Pwd is
+   Li_cont := new T_Liste_Contenu;
+   Li_cont.Est_Fichier := True;
+   Li_cont.Fichier := new T_Fichier'(Fi);
+   Li_cont.Dossier := null;
+   Li_cont.Suivant := null;
 
-   Actuel : P_Dossier;
+   if Actuel.all.Contenu = null then
+      Actuel.all.Contenu := Li_cont;
+   else
+      declare
+         C : P_Liste_Contenu := Actuel.all.Contenu;
+      begin
+         while C.all.Suivant /= null loop
+            C := C.all.Suivant;
+         end loop;
+         C.all.Suivant := Li_cont;
+      end;
+   end if;
+end Touch;
 
-   procedure Afficher_Chemin (D : P_Dossier) is
-   begin
-      if D = null then
-         -- Racine
-         Put ("/");
-      else
-         Afficher_Chemin (D.all.Parent);
-         Put (D.all.Nom);
-         Put ("/");
-      end if;
-   end Afficher_Chemin;
 
-begin
-   Afficher_Chemin (Actuel);
-   New_Line;
-end Pwd;
+
+
 
 end sgf;
