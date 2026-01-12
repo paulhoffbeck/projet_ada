@@ -39,7 +39,7 @@ package SGF is
 
 
    -- Affichage du répertoire courant
-   procedure Pwd (Dos : in T_Dossier);
+   procedure Pwd;
    -- pre  : Dossier initialisé
    -- post : Affiche le répertoire courant
 
