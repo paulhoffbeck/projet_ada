@@ -66,8 +66,13 @@ package SGF is
    -- pre  : Dossier initialisé
    -- post : Change le répertoire courant
 
-   -- Affichage du contenu d’un dossier (ls)
-   procedure Ls (Dos : in T_Dossier; Chemin : in String);
+   -- Affichage du contenu du dossier actuel (ls)
+   procedure Ls;
+   -- pre  : Dossier initialisé
+   -- post : Affiche le contenu du répertoire actuel
+
+-- Affichage du contenu d’un dossier (ls)
+   procedure Ls (Chemin : in String);
    -- pre  : Dossier initialisé
    -- post : Affiche le contenu du répertoire désigné
 
