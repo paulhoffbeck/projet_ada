@@ -1,3 +1,4 @@
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package SGF is
 
    type Indexeur is private;
@@ -9,7 +10,7 @@ package SGF is
    type P_Dossier is access all T_Dossier;
 
    type T_Fichier is record
-      Nom    : String;
+      Nom    : Unbounded_String;
       Taille : Integer;
       Droits : Integer := 2#000#; -- Droits : read, write, exec 
    end record;
@@ -25,7 +26,7 @@ package SGF is
    end record;
 
    type T_Dossier is record
-      Nom           : String;
+      Nom           : Unbounded_String;
       Droits        : Integer := 2#000#;
       Dossier_Parent : P_Dossier;
       Contenu       : P_Liste_Contenu;
@@ -35,6 +36,7 @@ package SGF is
    procedure Init_SGF (Dos : out T_Dossier);
    -- pre  : Dossier non initialisé
    -- post : Dossier racine vide créé
+
 
    -- Affichage du répertoire courant
    procedure Pwd (Dos : in T_Dossier);
