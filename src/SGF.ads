@@ -71,15 +71,20 @@ package SGF is
    -- pre  : Dossier initialisé
    -- post : Affiche le contenu du répertoire actuel
 
--- Affichage du contenu d’un dossier (ls)
+   -- Affichage du contenu d’un dossier (ls)
    procedure Ls (Chemin : in String);
    -- pre  : Dossier initialisé
    -- post : Affiche le contenu du répertoire désigné
 
    -- Affichage récursif (ls -r)
+   procedure Lsr;
+   -- pre  : Dossier initialisé
+   -- post : Affiche récursivement tous les fichiers et sous-répertoires du dossier actuel
+
+   -- Affichage récursif (ls -r)
    procedure Lsr (Dos : in T_Dossier);
    -- pre  : Dossier initialisé
-   -- post : Affiche récursivement tous les fichiers et sous-répertoires
+   -- post : Affiche récursivement tous les fichiers et sous-répertoires du dossier désigné
 
    -- Suppression d’un fichier
    procedure Rm (Dos : in out T_Dossier; Index : in Indexeur);
