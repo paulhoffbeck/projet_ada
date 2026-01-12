@@ -34,11 +34,11 @@ procedure Pwd is
 
    procedure Afficher_Chemin (D : P_Dossier) is
    begin
-      if D = null then
+      if D.all.Dossier_Parent = null then
          -- Racine
          Put ("/");
       else
-         Afficher_Chemin (D.all.Parent);
+         Afficher_Chemin (D.all.Dossier_Parent);
          Put (D.all.Nom);
          Put ("/");
       end if;
