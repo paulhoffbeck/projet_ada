@@ -1,6 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO; -- Permet d'afficher des entiers via Put()
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded; -- Permet d'utiliser des chaînes de char variables
 
 package body SGF is 
 
@@ -111,9 +111,21 @@ begin
    null;
 end Lsr;
 
-procedure Lsr (Dos : in T_Dossier) is
+procedure Lsr (Chemin : in String) is
 begin
-   null;
+   Conten := Actuel.all.Contenu;
+   while Conten /= null loop
+      if Conten.all.Est_Fichier = True then
+         Put (To_String(conten.all.Fichier.all.Nom));
+         Put (conten.all.Fichier.all.Taille);
+         Put (conten.all.Fichier.all.Droits);
+      else
+         Put (To_String(conten.all.Dossier.all.Nom));
+         Put (conten.all.Dossier.all.Droits);
+         Lsr (Conten.all.Dossier.all.Contenu.all);
+      end if;
+      Conten := Conten.all.Suivant;
+   end loop;
 end Lsr;
 
 procedure Rm (Dos : in out T_Dossier; Index : in Indexeur) is
