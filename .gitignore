@@ -1,0 +1,20 @@
+# Fichiers objets et exécutables
+*.o
+*.ali
+*.exe
+main
+
+# Répertoires de build GNAT
+obj/
+bin/
+
+# Fichiers de gprbuild
+*.cgpr
+*.gpr.user
+
+# Fichiers temporaires
+*~
+*.swp
+
+# Logs
+*.log
