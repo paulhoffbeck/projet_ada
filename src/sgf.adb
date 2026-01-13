@@ -1,4 +1,5 @@
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body SGF is 
@@ -19,11 +20,11 @@ begin
    conten := Actuel.all.Contenu;
    while conten /= null loop
       if conten.all.Est_Fichier = True then
-         Put (conten.all.Fichier.all.Nom);
+         Put (To_String(conten.all.Fichier.all.Nom));
          Put (conten.all.Fichier.all.Taille);
          Put (conten.all.Fichier.all.Droits);
       else
-         Put (conten.all.Dossier.all.Nom);
+         Put (To_String(conten.all.Dossier.all.Nom));
          Put (conten.all.Dossier.all.Droits);
       end if;
       conten := conten.all.Suivant;
@@ -38,7 +39,7 @@ procedure Pwd is
          Put ("/");
       else
          Afficher_Chemin (D.all.Dossier_Parent);
-         Put (D.all.Nom);
+         Put (To_String(D.all.Nom));
          Put ("/");
       end if;
    end Afficher_Chemin;
