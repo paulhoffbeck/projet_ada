@@ -53,7 +53,71 @@ package SGF is
    procedure Touch (Fi: out T_Fichier; Nom : in String; Droits : in Integer);
 
 
- 
+   -- Création d’un fichier avec le chemin en paramètre
+   procedure Touch (Dos : in out T_Dossier; Fi : out T_Fichier;
+                    Nom : in String; Droits : in Integer);
+   -- pre  : Dossier initialisé
+   -- post : Ajoute un fichier au contenu du dossier
+
+   -- Modification de la taille d’un fichier
+   procedure Modif_Taille (Dos : in T_Dossier; Fichier : in out T_Fichier;
+                           Taille : in Integer);
+   -- pre  : Fichier et dossier existent
+   -- post : Taille modifiée
+
+   -- Création d’un répertoire
+   procedure Mkdir (Dos : in out T_Dossier; Rep : out T_Dossier;
+                    Nom : in String; Droits : in Integer;
+                    Parent : in P_Dossier);
+   -- pre  : Dossier initialisé
+   -- post : Ajoute un dossier vide
+
+   -- Changement du répertoire courant
+   procedure Cd (Dos : in out T_Dossier; Repertoire : in String);
+   -- pre  : Dossier initialisé
+   -- post : Change le répertoire courant
+
+   -- Affichage du contenu du dossier actuel (ls)
+   procedure Ls;
+   -- pre  : Dossier initialisé
+   -- post : Affiche le contenu du répertoire actuel
+
+   -- Affichage du contenu d’un dossier (ls)
+   procedure Ls (Chemin : in String);
+   -- pre  : Dossier initialisé
+   -- post : Affiche le contenu du répertoire désigné
+
+   -- Affichage récursif (ls -r)
+   procedure Lsr;
+   -- pre  : Dossier initialisé
+   -- post : Affiche récursivement tous les fichiers et sous-répertoires du dossier actuel
+
+   -- Affichage récursif (ls -r)
+   procedure Lsr (Dos : in T_Dossier);
+   -- pre  : Dossier initialisé
+   -- post : Affiche récursivement tous les fichiers et sous-répertoires du dossier désigné
+
+   -- Suppression d’un fichier
+   procedure Rm (Dos : in out T_Dossier; Index : in Indexeur);
+   -- pre  : Index valide
+   -- post : Fichier supprimé
+   -- exception : Dossier inexistant
+
+   -- Suppression récursive d’un dossier
+   procedure Rmr (Dos : in out T_Dossier; Chemin : in String);
+   -- pre  : Dossier initialisé
+   -- post : Dossier et sous-dossiers supprimés
+
+   -- Déplacement ou renommage d’un fichier
+   procedure Mv (Dos : in out T_Dossier; Dest : in String; Nom : in String);
+   -- pre  : Dossier initialisé
+   -- post : Fichier déplacé ou renommé
+
+   -- Copie récursive d’un fichier ou dossier
+   procedure Cpr (Dos : in T_Dossier; Element : in String; Destination : in String);
+   -- pre  : Dossier initialisé, élément existant
+   -- post : Copie effectuée
+
 private
    type Indexeur is new Integer;
 end SGF;
