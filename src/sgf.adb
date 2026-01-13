@@ -18,6 +18,9 @@ procedure Ls is
    conten : P_Liste_Contenu;
 begin
    conten := Actuel.all.Contenu;
+   Put ("Nom   ");
+   Put ("Taille   ");
+   Put_Line ("Droits");
    while conten /= null loop
       if conten.all.Est_Fichier = True then
          Put (To_String(conten.all.Fichier.all.Nom));
@@ -36,7 +39,7 @@ procedure Pwd is
    procedure Afficher_Chemin (D : P_Dossier) is
    begin
       if D.all.Dossier_Parent = null then
-         Put ("/");
+         Put_Line ("Dossier actuel : /");
       else
          Afficher_Chemin (D.all.Dossier_Parent);
          Put (To_String(D.all.Nom));
