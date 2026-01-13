@@ -1,6 +1,9 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package SGF is
 
+   type String_List is array (Natural range <>) of Unbounded_String;
+
+
    type Indexeur is private;
 
    type T_Fichier;
@@ -32,8 +35,11 @@ package SGF is
       Contenu       : P_Liste_Contenu;
    end record;
 
+   Actuel : aliased P_Dossier;
+   Racine : aliased T_Dossier;
+
    -- Initialisation du SGF (formatage)
-   procedure Init_SGF (Dos : out T_Dossier);
+   procedure Init_SGF;
    -- pre  : Dossier non initialisé
    -- post : Dossier racine vide créé
 
@@ -43,8 +49,11 @@ package SGF is
    -- pre  : Dossier initialisé
    -- post : Affiche le répertoire courant
 
+   -- Création d’un fichier avec le chemin courant
+   procedure Touch (Fi: out T_Fichier; Nom : in String; Droits : in Integer);
 
-   -- Création d’un fichier
+
+   -- Création d’un fichier avec le chemin en paramètre
    procedure Touch (Dos : in out T_Dossier; Fi : out T_Fichier;
                     Nom : in String; Droits : in Integer);
    -- pre  : Dossier initialisé
