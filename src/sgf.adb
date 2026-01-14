@@ -1,23 +1,38 @@
-with Ada.Text_IO;         use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body SGF is 
 
-   procedure Init_SGF is
-   begin
-      Racine.Nom := To_Unbounded_String("/");
-      Racine.Droits := 2#111#; -- read, write, exec
-      Racine.Dossier_Parent := null;
-      Racine.Contenu := null;
+procedure Init_SGF is
+begin
+   Racine.Nom := To_Unbounded_String("/");
+   Racine.Droits := 2#111#; -- read, write, exec
+   Racine.Dossier_Parent := null;
+   Racine.Contenu := null;
 
-      Actuel := Racine'Access;
-   end Init_SGF;
+   Actuel := Racine'Access;
+end Init_SGF;
 
-
-   procedure Ls is
-   begin
-      null;
-   end Ls;
+procedure Ls is
+   conten : P_Liste_Contenu;
+begin
+   conten := Actuel.all.Contenu;
+   Put ("Nom   ");
+   Put ("Taille   ");
+   Put_Line ("Droits");
+   while conten /= null loop
+      if conten.all.Est_Fichier = True then
+         Put (To_String(conten.all.Fichier.all.Nom));
+         Put (conten.all.Fichier.all.Taille);
+         Put (conten.all.Fichier.all.Droits);
+      else
+         Put (To_String(conten.all.Dossier.all.Nom));
+         Put (conten.all.Dossier.all.Droits);
+      end if;
+      conten := conten.all.Suivant;
+   end loop;
+end Ls;
 
 
    procedure Pwd is

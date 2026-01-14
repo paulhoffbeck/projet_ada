@@ -12,7 +12,6 @@ begin
    Put_Line(To_String(SGF.Racine.Nom));
 
    SGF.Touch(Fi => Fi, Nom => nom_fichier, Droits => 2#110#);
-
    Put_Line(To_String(SGF.Racine.Contenu.all.Fichier.all.Nom));
 
    for I in Liste'Range loop
@@ -20,4 +19,6 @@ begin
    end loop;
 
 
+   SGF.Pwd;
+   SGF.Ls;
 end Main;
