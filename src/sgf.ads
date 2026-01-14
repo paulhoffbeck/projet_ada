@@ -1,7 +1,7 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package SGF is
 
-   type String_List is array (Natural range <>) of Unbounded_String;
+   type Liste_U_String is array (Positive range <>) of Unbounded_String;
 
 
    type Indexeur is private;
@@ -117,6 +117,10 @@ package SGF is
    procedure Cpr (Dos : in T_Dossier; Element : in String; Destination : in String);
    -- pre  : Dossier initialisé, élément existant
    -- post : Copie effectuée
+
+   function Split(chemin : String) return Liste_U_String;
+   -- pre  : Chemin non vide
+   -- post : Renvoie une liste de chaînes de caractères correspondant aux éléments du chemin
 
 private
    type Indexeur is new Integer;
