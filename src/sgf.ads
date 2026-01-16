@@ -92,7 +92,7 @@ package SGF is
    -- post : Affiche récursivement tous les fichiers et sous-répertoires du dossier actuel
 
    -- Affichage récursif (ls -r)
-   procedure Lsr (Dos : in T_Dossier);
+   procedure Lsr (Chemin : in String);
    -- pre  : Dossier initialisé
    -- post : Affiche récursivement tous les fichiers et sous-répertoires du dossier désigné
 
