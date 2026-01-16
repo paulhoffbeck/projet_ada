@@ -24,13 +24,51 @@ package body Affichage is
    end Faire_Init;
 
    procedure Faire_Dossier is
-   nom : string;
-   chemin : string;
-   droits : integer;
-   
+   Nom     : String (1..100);
+   Chemin  : String (1..200);
+   LongNom : Natural;
+   LongChemin : Natural;
+   Droits  : Integer;
    begin
-
+   Skip_Line;
+   Put ("Nom du dossier : ");
+   Get_Line(Nom, LongNom);
+   New_Line;
+   Put ("Chemin du dossier : ");
+   Get_Line(Chemin, LongChemin);
+   Put_Line("Quelles droits voulez vous (111 = rwe, 000 = rien, 010 = rien, write, rien )");
+   Get(droits);
+   Mkdir(Chemin(1..LongChemin), Nom(1..LongNom), Droits, Actuel);
    end Faire_Dossier;
+
+   procedure Faire_Touch is
+   Nom     : String (1..100);
+   Chemin  : String (1..200);
+   LongNom : Natural;
+   LongChemin : Natural;
+   Droits  : Integer;
+   Fi : T_Fichier;
+   begin
+   Skip_Line;
+   Put ("Nom du Fichier : ");
+   Get_Line(Nom, LongNom);
+   New_Line;
+   Put ("Chemin du Fichier : ");
+   Get_Line(Chemin, LongChemin);
+   Put_Line("Quelles droits voulez vous (111 = rwe, 000 = rien, 010 = rien, write, rien )");
+   Get(droits);
+   Touch(Fi,Nom(1..LongNom),Droits);
+   end Faire_Touch;
+
+   procedure Faire_Cd is
+   Chemin  : String (1..200);
+   LongChemin : Natural;
+   begin
+   Skip_Line;
+   Put("Chemin du cd");
+   Get_Line(Chemin, LongChemin);
+   Cd(Actuel,Chemin(1..LongChemin));
+   end Faire_Cd;
 
    procedure Faux_Main is
    choix : Integer;
@@ -46,7 +84,7 @@ package body Affichage is
             Put_Line("Cmd");
             exit;
          when 3 =>
-            exit;
+            return;
          when others =>
             Put_Line ("Choix invalide");
       end case;
@@ -59,11 +97,11 @@ package body Affichage is
       Put_Line ("|      Bienvenue dans le SGF mode menu          |");
       Put_Line ("|-----------------------------------------------|");
       Put_Line ("|   1. Créer un SGF                             |");
-      Put_Line ("|   2. Créer un dossier                         |");
-      Put_Line ("|   3. Créer un fichier                         |");
-      Put_Line ("|   4. Changer de répertoire                    |");
-      Put_Line ("|   5. Afficher le répertoire                   |");
-      Put_Line ("|   6. Changer de répertoire                    |");
+      Put_Line ("|   2. Créer un dossier (mkdir)                 |");
+      Put_Line ("|   3. Créer un fichier (touch)                 |");
+      Put_Line ("|   4. Changer de répertoire (cd)               |");
+      Put_Line ("|   5. Afficher le répertoire (ls)              |");
+      Put_Line ("|   6. Afficher le chemin (pwd)                 |");
       Put_Line ("|   7. Revenir au chois de mode                 |");
       Put_Line ("|                                               |");
       Put_Line ("|   Entrez votre choix (1-7)                    |");
@@ -73,7 +111,7 @@ package body Affichage is
    procedure Menu is
    choix :integer;
    begin
-
+   while True loop
       Afficher_Banniere_Menu;
       Get(choix);
       case choix is
@@ -84,13 +122,18 @@ package body Affichage is
          when 3 =>
             Faire_Touch;
          when 4 =>
-            Faire_CD;
+            Faire_Cd;
          when 5 =>
-            Faire_Ls;
+            Ls;
+            New_Line;
+         when 6 =>
+            Pwd;
+            New_Line;
          when 7 =>
             Faux_Main;
          when others =>
             Put_Line ("Choix invalide");
       end case;
+      end loop;
    end Menu;
 end Affichage;
