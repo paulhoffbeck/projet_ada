@@ -181,23 +181,25 @@ end;
 
 procedure Lsr (Chemin : in String) is
 
+   conten : P_Liste_Contenu;
+
    procedure Ls_rec(Dos : in P_Liste_Contenu) is
    begin
-      Conten := Dos.all.Contenu;
-      while Conten /= null loop
-         if Conten.all.Est_Fichier = True then
+      conten := Dos;
+      while conten /= null loop
+         if conten.all.Est_Fichier = True then
             Put (To_String(conten.all.Fichier.all.Nom));
             Put (conten.all.Fichier.all.Taille);
             Put (conten.all.Fichier.all.Droits);
          else
             Put (To_String(conten.all.Dossier.all.Nom));
             Put (conten.all.Dossier.all.Droits);
-            Ls_rec (Conten.all.Dossier.all.Contenu);
+            Ls_rec (conten.all.Dossier.all.Contenu);
          end if;
-         Conten := Conten.all.Suivant;
+         conten := conten.all.Suivant;
       end loop;
    end Ls_rec;
-   Conten : P_Liste_Contenu;
+   
 begin
    -- 1. split le chemin donné en entrée
    -- 2. retrouver le P_Liste_Contenu à partir de la liste extraite
