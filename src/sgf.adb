@@ -2,7 +2,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO; -- Permet d'afficher des entiers via Put()
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded; -- Permet d'utiliser des chaînes de char variables
 
-package body SGF is 
+package body SGF is   
 
 procedure Init_SGF is
 begin
@@ -35,10 +35,21 @@ begin
 end Ls;
 
 
-   procedure Pwd is
+procedure Pwd is
+   procedure Afficher_Chemin (D : P_Dossier) is
    begin
-      null;
-   end Pwd;
+      if D.all.Dossier_Parent = null then
+         Put ("/");
+         Put_Line ("Dossier actuel : /");
+      else
+         Afficher_Chemin (D.all.Dossier_Parent);
+         Put (To_String(D.all.Nom));
+         Put ("/");
+      end if;
+   end Afficher_Chemin;
+begin
+   Afficher_Chemin (Actuel);
+end Pwd;
 
 
    procedure Touch (Fi: out T_Fichier; Nom : in String; Droits : in Integer) is
@@ -152,35 +163,49 @@ begin
 end Cd;
 
 
+procedure Ls (Chemin : in String) is
 
-   procedure Ls (Chemin : in String) is
+   procedure Ls_chemin(Dos : in P_Liste_Contenu) is
    begin
       null;
-   end Ls;
+   end Ls_chemin;
 
+begin
+   null;
+end Ls;
+
+procedure Lsr is
+begin
+   null;
+end;
 
 procedure Lsr (Chemin : in String) is
-begin
-   Conten := Actuel.all.Contenu;
-   while Conten /= null loop
-      if Conten.all.Est_Fichier = True then
-         Put (To_String(conten.all.Fichier.all.Nom));
-         Put (conten.all.Fichier.all.Taille);
-         Put (conten.all.Fichier.all.Droits);
-      else
-         Put (To_String(conten.all.Dossier.all.Nom));
-         Put (conten.all.Dossier.all.Droits);
-         Lsr (Conten.all.Dossier.all.Contenu.all);
-      end if;
-      Conten := Conten.all.Suivant;
-   end loop;
-end Lsr;
 
+   conten : P_Liste_Contenu;
 
-   procedure Lsr (Dos : in T_Dossier) is
+   procedure Ls_rec(Dos : in P_Liste_Contenu) is
    begin
-      null;
-   end Lsr;
+      conten := Dos;
+      while conten /= null loop
+         if conten.all.Est_Fichier = True then
+            Put (To_String(conten.all.Fichier.all.Nom));
+            Put (conten.all.Fichier.all.Taille);
+            Put (conten.all.Fichier.all.Droits);
+         else
+            Put (To_String(conten.all.Dossier.all.Nom));
+            Put (conten.all.Dossier.all.Droits);
+            Ls_rec (conten.all.Dossier.all.Contenu);
+         end if;
+         conten := conten.all.Suivant;
+      end loop;
+   end Ls_rec;
+   
+begin
+   -- 1. split le chemin donné en entrée
+   -- 2. retrouver le P_Liste_Contenu à partir de la liste extraite
+   -- 3. passer le P_Liste_Contenu en paramètre de Ls_rec
+   null;
+end Lsr;
 
 
    procedure Rm (Dos : in out T_Dossier; Index : in Indexeur) is
