@@ -36,13 +36,32 @@ begin
 
    -- Création d’un fichier à la racine
    SGF.Touch(Fi => Fi, Nom => nom_fichier, Droits => 2#110#);
-   Put_Line(To_String(SGF.Racine.Contenu.all.Fichier.all.Nom));
+   Put_Line("Fichier créé à la racine : " & To_String(SGF.Racine.Contenu.all.Fichier.all.Nom));
 
-   for I in Liste'Range loop
-      Put_Line("Segment " & I'Image & " = " & To_String(Liste(I)));
-   end loop;
+   -- Création de répertoires
+   SGF.Mkdir("/", "Test", 2#111#, SGF.Racine'Access);
+   SGF.Mkdir("/Test", "SousTest", 2#111#, SGF.Racine'Access);
 
+   -- Navigation
+   SGF.Cd(SGF.Actuel, "/");
+   Put_Line("Répertoire courant après Cd('/') : " & To_String(SGF.Actuel.all.Nom));
 
-   SGF.Pwd;
-   SGF.Ls;
+   SGF.Cd(SGF.Actuel, "Test");
+   Put_Line("Répertoire courant après Cd('Test') : " & To_String(SGF.Actuel.all.Nom));
+
+   SGF.Cd(SGF.Actuel, "SousTest");
+   Put_Line("Répertoire courant après Cd('SousTest') : " & To_String(SGF.Actuel.all.Nom));
+
+   SGF.Cd(SGF.Actuel, "..");
+   Put_Line("Retour avec Cd('..') : " & To_String(SGF.Actuel.all.Nom));
+
+   SGF.Cd(SGF.Actuel, "/");
+   Put_Line("Retour à la racine avec Cd('/') : " & To_String(SGF.Actuel.all.Nom));
+
+   -- Affichage complet de l’arborescence
+   New_Line;
+   Put_Line("=== Arborescence complète ===");
+   Affiche_Arbre(SGF.Racine'Access);
+   Put_Line("=============================");
+
 end Main;
