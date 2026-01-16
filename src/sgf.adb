@@ -2,7 +2,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO; -- Permet d'afficher des entiers via Put()
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded; -- Permet d'utiliser des chaînes de char variables
 
-package body SGF is 
+package body SGF is   
 
 procedure Init_SGF is
 begin
@@ -35,10 +35,21 @@ begin
 end Ls;
 
 
-   procedure Pwd is
+procedure Pwd is
+   procedure Afficher_Chemin (D : P_Dossier) is
    begin
-      null;
-   end Pwd;
+      if D.all.Dossier_Parent = null then
+         Put ("/");
+         Put_Line ("Dossier actuel : /");
+      else
+         Afficher_Chemin (D.all.Dossier_Parent);
+         Put (To_String(D.all.Nom));
+         Put ("/");
+      end if;
+   end Afficher_Chemin;
+begin
+   Afficher_Chemin (Actuel);
+end Pwd;
 
 
    procedure Touch (Fi: out T_Fichier; Nom : in String; Droits : in Integer) is
