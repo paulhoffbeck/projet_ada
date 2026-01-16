@@ -1,5 +1,9 @@
-with Ada.Text_IO; use Ada.Text_IO;
+with SGF; use SGF;
+with Ada.Text_IO;         use Ada.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Affichage; use Affichage;
+
 package body Affichage is
    procedure Afficher_Banniere_Main is
    begin
@@ -13,6 +17,20 @@ package body Affichage is
       Put_Line ("|   Entrez votre choix (1-3)                    |");
       Put_Line ("+-----------------------------------------------+");
    end Afficher_Banniere_Main;
+
+   procedure Faire_Init is
+   begin
+   Init_SGF;
+   end Faire_Init;
+
+   procedure Faire_Dossier is
+   nom : string;
+   chemin : string;
+   droits : integer;
+   
+   begin
+
+   end Faire_Dossier;
 
    procedure Faux_Main is
    choix : Integer;
@@ -60,21 +78,19 @@ package body Affichage is
       Get(choix);
       case choix is
          when 1 =>
-            Put_Line("Init");
+            Faire_Init;
          when 2 =>
-            Put_Line("Mkdir");
+            Faire_Dossier;
          when 3 =>
-            Put_Line("Touch");
+            Faire_Touch;
          when 4 =>
-            Put_Line("cd");
+            Faire_CD;
          when 5 =>
-            Put_Line("ls");
-         when 6 =>
-            Put_Line("Changement de répertoire choisi");
+            Faire_Ls;
          when 7 =>
             Faux_Main;
          when others =>
             Put_Line ("Choix invalide");
-   end case;
+      end case;
    end Menu;
 end Affichage;

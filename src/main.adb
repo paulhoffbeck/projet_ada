@@ -6,7 +6,6 @@ with Affichage; use Affichage;
 
 procedure Main is
 choix : Integer;
-
 begin
    while True loop
       Afficher_Banniere_Main;
