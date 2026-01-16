@@ -96,15 +96,29 @@ end Ls;
       null;
    end Cd;
 
+procedure Ls (Chemin : in String) is
 
-   procedure Ls (Chemin : in String) is
+   procedure Ls_chemin(Dos : in P_Liste_Contenu) is
    begin
-      null;
-   end Ls;
+      
+   end Ls_chemin;
+
+begin
+   null;
+end Ls;
 
 
 procedure Lsr (Chemin : in String) is
+
+   procedure Ls_rec(Dos : in P_Liste_Contenu) is
+   begin
+
+   end Ls_rec;
+
 begin
+   -- 1. split le chemin donné en entrée
+   -- 2. retrouver le P_Liste_Contenu à partir de la liste extraite
+   -- 3. passer le P_Liste_Contenu en paramètre de Ls_rec
    Conten := Actuel.all.Contenu;
    while Conten /= null loop
       if Conten.all.Est_Fichier = True then
