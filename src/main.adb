@@ -1,67 +1,84 @@
 with SGF; use SGF;
 with Ada.Text_IO;         use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 procedure Main is
-   Fi : SGF.T_Fichier;
-   nom_fichier : constant String := "Bonjour.txt";
+choix : Integer;
 
-   -- Petite procédure locale pour afficher l’arborescence
-   procedure Affiche_Arbre (Dos : SGF.P_Dossier; Indent : Integer := 0) is
-      Elem : SGF.P_Liste_Contenu;
+   procedure Afficher_Banniere_Main is
    begin
-      for I in 1 .. Indent loop
-         Put("  ");
-      end loop;
-      Put_Line(To_String(Dos.all.Nom) & "/");
+      Put_Line ("+-----------------------------------------------+");
+      Put_Line ("|           Bienvenue dans le SGF               |");
+      Put_Line ("|-----------------------------------------------|");
+      Put_Line ("|   1. Mode Menu (navigation par chiffres)      |");
+      Put_Line ("|   2. Mode Terminal (commandes manuelles)      |");
+      Put_Line ("|   3. Quitter                                  |");
+      Put_Line ("|                                               |");
+      Put_Line ("|   Entrez votre choix (1-3)                    |");
+      Put_Line ("+-----------------------------------------------+");
+   end Afficher_Banniere_Main;
 
-      Elem := Dos.all.Contenu;
-      while Elem /= null loop
-         if Elem.all.Est_Fichier then
-            for I in 1 .. Indent + 1 loop
-               Put("  ");
-            end loop;
-            Put_Line("- " & To_String(Elem.all.Fichier.all.Nom));
-         else
-            Affiche_Arbre(Elem.all.Dossier, Indent + 1);
-         end if;
-         Elem := Elem.all.Suivant;
-      end loop;
-   end Affiche_Arbre;
+   procedure Afficher_Banniere_Menu is
+   begin
+      Put_Line ("+-----------------------------------------------+");
+      Put_Line ("|      Bienvenue dans le SGF mode menu          |");
+      Put_Line ("|-----------------------------------------------|");
+      Put_Line ("|   1. Créer un SGF                             |");
+      Put_Line ("|   2. Créer un dossier                         |");
+      Put_Line ("|   3. Créer un fichier                         |");
+      Put_Line ("|   4. Changer de répertoire                    |");
+      Put_Line ("|   5. Afficher le répertoire                   |");
+      Put_Line ("|   6. Changer de répertoire                    |");
+      Put_Line ("|   7. Revenir au chois de mode                 |");
+      Put_Line ("|                                               |");
+      Put_Line ("|   Entrez votre choix (1-7)                    |");
+      Put_Line ("+-----------------------------------------------+");
+   end Afficher_Banniere_Menu;
+
+   procedure Menu is
+   begin
+      choix :=0;
+      Afficher_Banniere_Menu;
+      Get(choix);
+      case choix is
+         when 1 =>
+            Put_Line("Init");
+         when 2 =>
+            Put_Line("Mkdir");
+         when 3 =>
+            Put_Line("Touch");
+          
+         when 4 =>
+            Put_Line("cd");
+         when 5 =>
+            Put_Line("ls");
+         when 6 =>
+            Put_Line("Changement de répertoire choisi");
+         when 7 =>
+            Main;
+         when others =>
+            Put_Line ("Choix invalide");
+   end case;
+   end Menu;
+
+
 
 begin
-   -- Initialisation
-   SGF.Init_SGF;
-   Put_Line("Répertoire courant après Init : " & To_String(SGF.Racine.Nom));
-
-   -- Création d’un fichier à la racine
-   SGF.Touch(Fi => Fi, Nom => nom_fichier, Droits => 2#110#);
-   Put_Line("Fichier créé à la racine : " & To_String(SGF.Racine.Contenu.all.Fichier.all.Nom));
-
-   -- Création de répertoires
-   SGF.Mkdir("/", "Test", 2#111#, SGF.Racine'Access);
-   SGF.Mkdir("/Test", "SousTest", 2#111#, SGF.Racine'Access);
-
-   -- Navigation
-   SGF.Cd(SGF.Actuel, "/");
-   Put_Line("Répertoire courant après Cd('/') : " & To_String(SGF.Actuel.all.Nom));
-
-   SGF.Cd(SGF.Actuel, "Test");
-   Put_Line("Répertoire courant après Cd('Test') : " & To_String(SGF.Actuel.all.Nom));
-
-   SGF.Cd(SGF.Actuel, "SousTest");
-   Put_Line("Répertoire courant après Cd('SousTest') : " & To_String(SGF.Actuel.all.Nom));
-
-   SGF.Cd(SGF.Actuel, "..");
-   Put_Line("Retour avec Cd('..') : " & To_String(SGF.Actuel.all.Nom));
-
-   SGF.Cd(SGF.Actuel, "/");
-   Put_Line("Retour à la racine avec Cd('/') : " & To_String(SGF.Actuel.all.Nom));
-
-   -- Affichage complet de l’arborescence
-   New_Line;
-   Put_Line("=== Arborescence complète ===");
-   Affiche_Arbre(SGF.Racine'Access);
-   Put_Line("=============================");
-
+   while True loop
+      Afficher_Banniere_Main;
+      Get(choix);
+      case choix is 
+         when 1 =>
+            Menu;
+            exit;
+         when 2 =>
+            Put_Line("Cmd");
+            exit;
+         when 3 =>
+            exit;
+         when others =>
+            Put_Line ("Choix invalide");
+      end case;
+   end loop;
 end Main;
