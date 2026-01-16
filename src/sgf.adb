@@ -94,18 +94,74 @@ end Pwd;
    end Modif_Taille;
 
 
-   procedure Mkdir (Dos : in out T_Dossier; Rep : out T_Dossier;
-                    Nom : in String; Droits : in Integer;
-                    Parent : in P_Dossier) is
-   begin
-      null;
-   end Mkdir;
+procedure Mkdir (Chemin : in String; Nom : in String; Droits : in Integer; Parent : in P_Dossier) is
+   Dossier_Acuel : P_Dossier := Actuel;
+   Nouveau_Dossier : T_Dossier;
+   P_Nouveau_Dossier : P_Dossier;
+   P_Liste_Contenu_Nouveau : P_Liste_Contenu;
+   Dernier : P_Liste_Contenu;
+begin
+   Cd(Dossier_Acuel, Chemin);
+   Nouveau_Dossier.Nom := To_Unbounded_String(Nom);
+   Nouveau_Dossier.Droits := Droits;
+   Nouveau_Dossier.Dossier_Parent := Dossier_Acuel;
+   Nouveau_Dossier.Contenu := null;
+   P_Nouveau_Dossier := new T_Dossier'(Nouveau_Dossier);
+   P_Liste_Contenu_Nouveau := new T_Liste_Contenu'(
+      Est_Fichier => False,
+      Fichier     => null,
+      Dossier     => P_Nouveau_Dossier,
+      Suivant     => null
+   );
+   if Dossier_Acuel.all.Contenu = null then
+      Dossier_Acuel.all.Contenu := P_Liste_Contenu_Nouveau;
+   else
+      Dernier := Dossier_Acuel.all.Contenu;
+      while Dernier.all.Suivant /= null loop
+         Dernier := Dernier.all.Suivant;
+      end loop;
+      Dernier.all.Suivant := P_Liste_Contenu_Nouveau;
+   end if;
+end Mkdir;
 
 
-   procedure Cd (Dos : in out T_Dossier; Repertoire : in String) is
-   begin
-      null;
-   end Cd;
+
+   procedure Cd (Cur : in out P_Dossier; Repertoire : in String) is
+   Liste_Chemin : Liste_U_String := Split(Repertoire);
+   Elem : P_Liste_Contenu;
+begin
+   for i in Liste_Chemin'Range loop
+      declare
+         Nom_Segment : constant String := To_String(Liste_Chemin(i));
+      begin
+         if Nom_Segment = " " then
+            Cur := Racine'Access;
+
+         elsif Nom_Segment = "." then
+            null;
+
+         elsif Nom_Segment = ".." then
+            if Cur.all.Dossier_Parent /= null then
+               Cur := Cur.all.Dossier_Parent;
+            end if;
+
+         else
+            Elem := Cur.all.Contenu;
+            while Elem /= null loop
+               if (not Elem.all.Est_Fichier)
+                  and then (Elem.all.Dossier /= null)
+                  and then (To_String(Elem.all.Dossier.all.Nom) = Nom_Segment)
+               then
+                  Cur := Elem.all.Dossier;
+                  exit;
+               end if;
+               Elem := Elem.all.Suivant;
+            end loop;
+         end if;
+      end;
+   end loop;
+end Cd;
+
 
 procedure Ls (Chemin : in String) is
 

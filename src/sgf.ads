@@ -66,14 +66,13 @@ package SGF is
    -- post : Taille modifiée
 
    -- Création d’un répertoire
-   procedure Mkdir (Dos : in out T_Dossier; Rep : out T_Dossier;
-                    Nom : in String; Droits : in Integer;
-                    Parent : in P_Dossier);
+   procedure Mkdir (Chemin : in String; Nom : in String; Droits : in Integer; Parent : in P_Dossier);
    -- pre  : Dossier initialisé
    -- post : Ajoute un dossier vide
+   
 
    -- Changement du répertoire courant
-   procedure Cd (Dos : in out T_Dossier; Repertoire : in String);
+   procedure Cd (Cur : in out P_Dossier ; Repertoire : in String);
    -- pre  : Dossier initialisé
    -- post : Change le répertoire courant
 
