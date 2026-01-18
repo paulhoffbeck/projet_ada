@@ -2,7 +2,9 @@ with SGF; use SGF;
 with Ada.Text_IO;         use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+
 with Affichage; use Affichage;
+with Affichage_cmd; use Affichage_cmd;
 
 procedure Main is
 choix : Integer;
@@ -15,7 +17,7 @@ begin
             Menu;
             exit;
          when 2 =>
-            Put_Line("Cmd");
+            Cmd;
             exit;
          when 3 =>
             exit;
