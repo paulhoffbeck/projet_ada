@@ -117,7 +117,7 @@ package SGF is
    -- pre  : Dossier initialisé, élément existant
    -- post : Copie effectuée
 
-   function Split(chemin : String) return Liste_U_String;
+   function Split(chemin : String; symbole : Character) return Liste_U_String;
    -- pre  : Chemin non vide
    -- post : Renvoie une liste de chaînes de caractères correspondant aux éléments du chemin
 

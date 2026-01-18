@@ -127,7 +127,7 @@ end Mkdir;
 
 
    procedure Cd (Cur : in out P_Dossier; Repertoire : in String) is
-   Liste_Chemin : Liste_U_String := Split(Repertoire);
+   Liste_Chemin : Liste_U_String := Split(Repertoire,'/');
    Elem : P_Liste_Contenu;
 begin
    for i in Liste_Chemin'Range loop
@@ -231,15 +231,20 @@ end Lsr;
       null;
    end Cpr;
 
-   function Split(chemin : String) return Liste_U_String is
+   function Split(chemin : String ; symbole : Character) return Liste_U_String is
          Compteur : Integer := 1;
          index    : Integer := 1;
          start    : Integer := 1;
          partie   : Unbounded_String := To_Unbounded_String("");
+         Lst_U_vide : Liste_U_String(1..1);
       begin
          -- Count slashes to know the number of segments
+         if chemin = "" then
+         Lst_U_vide(1) := To_Unbounded_String("");
+         return Lst_U_vide;
+         end if;
          for i in chemin'Range loop
-            if chemin(i) = '/' then
+            if chemin(i) = symbole then
                Compteur := Compteur + 1;
             end if; 
          end loop;
@@ -247,14 +252,14 @@ end Lsr;
          declare
             Result : Liste_U_String(1..Compteur);
          begin
-            if chemin(1) = '/' then
+            if chemin(1) = symbole then
                Result(index) := To_Unbounded_String(" ");
                index := index + 1;
                start := start + 1;
             end if;
 
             for i in start..chemin'Length loop
-               if chemin(i) = '/' then
+               if chemin(i) = symbole then
                   Result(index) := partie;
                   index := index + 1;
                   partie := To_Unbounded_String("");
