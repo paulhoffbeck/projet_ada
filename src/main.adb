@@ -11,7 +11,14 @@ choix : Integer;
 begin
    while True loop
       Afficher_Banniere_Main;
+      begin
       Get(choix);
+               exception
+         when Data_error =>
+         Put_Line("Veillez entrer un nombre !!");
+         Skip_Line;
+      end;
+      begin
       case choix is 
          when 1 =>
             Menu;
@@ -22,7 +29,12 @@ begin
          when 3 =>
             exit;
          when others =>
-            Put_Line ("Choix invalide");
+         Put_Line("Choix de nombre invalide !");
       end case;
+      exception 
+         when Data_error =>
+            Put_Line("Nombre d'arguments invalides !");
+            Skip_Line;
+      end;
    end loop;
 end Main;

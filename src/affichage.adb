@@ -3,6 +3,7 @@ with Ada.Text_IO;         use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Affichage; use Affichage;
+with Affichage_cmd; use Affichage_cmd;
 
 package body Affichage is
    procedure Afficher_Banniere_Main is
@@ -20,7 +21,7 @@ package body Affichage is
 
    procedure Faire_Init is
    begin
-   Init_SGF;
+      Init_SGF;
    end Faire_Init;
 
    procedure Faire_Dossier is
@@ -30,15 +31,15 @@ package body Affichage is
    LongChemin : Natural;
    Droits  : Integer;
    begin
-   Skip_Line;
-   Put ("Nom du dossier : ");
-   Get_Line(Nom, LongNom);
-   New_Line;
-   Put ("Chemin du dossier : ");
-   Get_Line(Chemin, LongChemin);
-   Put_Line("Quelles droits voulez vous (111 = rwe, 000 = rien, 010 = rien, write, rien )");
-   Get(droits);
-   Mkdir(Chemin(1..LongChemin), Nom(1..LongNom), Droits, Actuel);
+      Skip_Line;
+      Put ("Nom du dossier : ");
+      Get_Line(Nom, LongNom);
+      New_Line;
+      Put ("Chemin du dossier : ");
+      Get_Line(Chemin, LongChemin);
+      Put_Line("Quelles droits voulez vous (111 = rwe, 000 = rien, 010 = rien, write, rien )");
+      Get(droits);
+      Mkdir(Chemin(1..LongChemin), Nom(1..LongNom), Droits, Actuel);
    end Faire_Dossier;
 
    procedure Faire_Touch is
@@ -49,45 +50,58 @@ package body Affichage is
    Droits  : Integer;
    Fi : T_Fichier;
    begin
-   Skip_Line;
-   Put ("Nom du Fichier : ");
-   Get_Line(Nom, LongNom);
-   New_Line;
-   Put ("Chemin du Fichier : ");
-   Get_Line(Chemin, LongChemin);
-   Put_Line("Quelles droits voulez vous (111 = rwe, 000 = rien, 010 = rien, write, rien )");
-   Get(droits);
-   Touch(Fi,Nom(1..LongNom),Droits);
+      Skip_Line;
+      Put ("Nom du Fichier : ");
+      Get_Line(Nom, LongNom);
+      New_Line;
+      Put ("Chemin du Fichier : ");
+      Get_Line(Chemin, LongChemin);
+      Put_Line("Quelles droits voulez vous (111 = rwe, 000 = rien, 010 = rien, write, rien )");
+      Get(droits);
+      Touch(Fi,Nom(1..LongNom),Droits);
    end Faire_Touch;
+
+   procedure Faire_Modif_Taille is
+   begin
+      null;
+   end Faire_Modif_Taille;
 
    procedure Faire_Cd is
    Chemin  : String (1..200);
    LongChemin : Natural;
    begin
-   Skip_Line;
-   Put("Chemin du cd");
-   Get_Line(Chemin, LongChemin);
-   Cd(Actuel,Chemin(1..LongChemin));
+      Skip_Line;
+      Put("Chemin du cd");
+      Get_Line(Chemin, LongChemin);
+      Cd(Actuel,Chemin(1..LongChemin));
    end Faire_Cd;
 
    procedure Faux_Main is
    choix : Integer;
    begin
     while True loop
-      Afficher_Banniere_Main;
-      Get(choix);
-      case choix is 
-         when 1 =>
-            Menu;
-            exit;
-         when 2 =>
-            Put_Line("Cmd");
-            exit;
-         when 3 =>
-            return;
-         when others =>
-            Put_Line ("Choix invalide");
-      end case;
+      begin
+         Afficher_Banniere_Main;
+         Get(choix);
+         case choix is 
+            when 1 =>
+               Menu;
+               exit;
+            when 2 =>
+               Cmd;
+               exit;
+            when 3 =>
+               raise Sortie;
+            when others =>
+               raise Bad_Choice_Number;
+         end case;
+         
+         exception
+            when Bad_Choice_Number =>
+               Put("Mauvais choix de nombre !");
+            when Data_error =>
+               Put("Veillez entrer un nombre !");
+      end;
    end loop;
    end Faux_Main;
 
@@ -102,9 +116,10 @@ package body Affichage is
       Put_Line ("|   4. Changer de répertoire (cd)               |");
       Put_Line ("|   5. Afficher le répertoire (ls)              |");
       Put_Line ("|   6. Afficher le chemin (pwd)                 |");
-      Put_Line ("|   7. Revenir au chois de mode                 |");
+      Put_Line ("|   7. Modifier la taille                       |");
+      Put_Line ("|   12. Revenir au chois de mode                |");
       Put_Line ("|                                               |");
-      Put_Line ("|   Entrez votre choix (1-7)                    |");
+      Put_Line ("|   Entrez votre choix (1-12)                   |");
       Put_Line ("+-----------------------------------------------+");
    end Afficher_Banniere_Menu;
 
@@ -112,6 +127,7 @@ package body Affichage is
    choix :integer;
    begin
    while True loop
+      begin
       Afficher_Banniere_Menu;
       Get(choix);
       case choix is
@@ -129,11 +145,37 @@ package body Affichage is
          when 6 =>
             Pwd;
             New_Line;
-         when 7 =>
+         when 7 => 
+            Faire_Modif_Taille;
+         when 12 =>
             Faux_Main;
          when others =>
-            Put_Line ("Choix invalide");
+            raise Bad_Choice_Number;
       end case;
+      exception
+         when Bad_Choice_Number =>
+            Put("Mauvais choix de nombre !");
+            New_Line;
+            Skip_Line;
+         when Data_error =>
+               Put("Veillez entrer un nombre !");
+               Skip_Line;
+               New_Line;
+         when Constraint_Error =>
+         Put_Line("Mauvais arguments !");
+
+         when Uninitialized_SGF =>
+         Put_Line("SGF non initialisé :( ");
+
+         when Incorect_Argument_Number => 
+         Put_Line("Nombre d'argument incorecte !");
+      end;
       end loop;
+
+   exception
+   when Sortie =>
+   return;
    end Menu;
+
+   
 end Affichage;

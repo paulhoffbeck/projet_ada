@@ -27,8 +27,12 @@ if Commande = "init" or Commande = "INIT" or Commande = "Init" then
 Init_SGF;
 else if Commande = "mkdir" or Commande = "MKDIR" or Commande = "Mkdir" then
 Cmd_Faire_Mkdir(Liste_param, Nb_El);
+
 else if Commande = "touch" or Commande = "TOUCH" or Commande = "Touch" then
 Cmd_Faire_Touch(Liste_param, Nb_El);
+
+
+
 
 else if Commande = "cd" or Commande = "CD" or Commande = "Cd" then
 Cmd_Faire_Cd(Liste_param, Nb_El);
@@ -53,6 +57,15 @@ end if;
 end if;
 end if;
 end if;
+exception 
+when Constraint_Error =>
+Put_Line("Mauvais arguments !");
+
+when Uninitialized_SGF =>
+Put_Line("SGF non initialisé :( ");
+
+when Incorect_Argument_Number => 
+Put_Line("Nombre d'argument incorecte !");
 end Trouver_Commande;
 
 procedure Cmd_Faire_Mkdir(Liste_param : Liste_U_String ; Nb_El : Integer) is
@@ -65,7 +78,7 @@ case Nb_El is
 when 4 =>
 Mkdir(Str, Str2, Int, Actuel);
 when others =>
-Put_Line("Nombre d'argument incorrecte");
+raise Incorect_Argument_Number;
 end case;
 end Cmd_Faire_Mkdir;
 
@@ -75,11 +88,12 @@ Str : string := To_String(Liste_param(2));
 Str2 : string := To_String(Liste_param(3));
 Int : Integer := Integer'Value(Str2);
 begin
+
 case Nb_El is
 when 3 =>
 Touch(Fi,Str,Int);
 when others =>
-Put_Line("Nombre d'argument incorrecte");
+raise Incorect_Argument_Number;
 end case;
 end Cmd_Faire_Touch;
 
@@ -96,7 +110,7 @@ when 1 =>
 Ls;
 New_Line;
 when others =>
-Put_Line("Nombre d'argument incorrecte");
+raise Incorect_Argument_Number;
 end case;
 end Cmd_Faire_Ls;
 
@@ -107,7 +121,7 @@ when 1 =>
 Pwd;
 New_Line;
 when others =>
-Put_Line("Nombre d'argument incorrecte");
+raise Incorect_Argument_Number;
 end case;
 end Cmd_Faire_Pwd;
 

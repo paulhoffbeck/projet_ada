@@ -8,4 +8,7 @@ procedure Cmd_Faire_Touch(Liste_param : Liste_U_String ; Nb_El : Integer);
 procedure Cmd_Faire_Cd(Liste_param : Liste_U_String ; Nb_El : Integer);
 procedure Cmd_Faire_Ls(Liste_param : Liste_U_String ; Nb_El : Integer);
 procedure Cmd_Faire_Pwd(Liste_param : Liste_U_String ; Nb_El : Integer);
+
+Bad_Argument : exception;
+Incorect_Argument_Number : exception;
 end Affichage_cmd;
