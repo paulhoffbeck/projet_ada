@@ -37,6 +37,7 @@ package SGF is
 
    Actuel : aliased P_Dossier;
    Racine : aliased T_Dossier;
+   Uninitialized_SGF : exception;
 
    -- Initialisation du SGF (formatage)
    procedure Init_SGF;
@@ -60,8 +61,7 @@ package SGF is
    -- post : Ajoute un fichier au contenu du dossier
 
    -- Modification de la taille d’un fichier
-   procedure Modif_Taille (Dos : in T_Dossier; Fichier : in out T_Fichier;
-                           Taille : in Integer);
+   procedure Modif_Taille (Chemin : String; Taille : in Integer; Fichier : out T_Fichier);
    -- pre  : Fichier et dossier existent
    -- post : Taille modifiée
 
@@ -117,9 +117,11 @@ package SGF is
    -- pre  : Dossier initialisé, élément existant
    -- post : Copie effectuée
 
-   function Split(chemin : String) return Liste_U_String;
+   function Split(chemin : String; symbole : Character) return Liste_U_String;
    -- pre  : Chemin non vide
    -- post : Renvoie une liste de chaînes de caractères correspondant aux éléments du chemin
+
+   function Trouver_fichier(chemin : string) return T_Fichier;
 
 private
    type Indexeur is new Integer;

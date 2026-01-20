@@ -17,7 +17,12 @@ end Init_SGF;
 procedure Ls is
    conten : P_Liste_Contenu;
 begin
+   begin
    conten := Actuel.all.Contenu;
+   exception
+      when Constraint_Error =>
+         raise Uninitialized_SGF;
+   end;
    Put ("Nom   ");
    Put ("Taille   ");
    Put_Line ("Droits");
@@ -46,6 +51,9 @@ procedure Pwd is
          Put (To_String(D.all.Nom));
          Put ("/");
       end if;
+   exception
+   when Constraint_Error =>
+   raise Uninitialized_SGF;
    end Afficher_Chemin;
 begin
    Afficher_Chemin (Actuel);
@@ -64,7 +72,7 @@ end Pwd;
       Li_cont.Fichier := new T_Fichier'(Fi);
       Li_cont.Dossier := null;
       Li_cont.Suivant := null;
-
+      begin
       if Actuel.all.Contenu = null then
          Actuel.all.Contenu := Li_cont;
       else
@@ -77,6 +85,10 @@ end Pwd;
             C.all.Suivant := Li_cont;
          end;
       end if;
+      exception
+      when Constraint_Error =>
+      raise Uninitialized_SGF;
+      end;
    end Touch;
 
 
@@ -87,11 +99,13 @@ end Pwd;
    end Touch;
 
 
-   procedure Modif_Taille (Dos : in T_Dossier; Fichier : in out T_Fichier;
-                           Taille : in Integer) is
-   begin
-      null;
-   end Modif_Taille;
+function Trouver_fichier (Chemin : String) return T_Fichier is
+Fi : T_Fichier;
+begin
+null;
+return Fi;
+
+end Trouver_fichier;
 
 
 procedure Mkdir (Chemin : in String; Nom : in String; Droits : in Integer; Parent : in P_Dossier) is
@@ -127,9 +141,9 @@ end Mkdir;
 
 
    procedure Cd (Cur : in out P_Dossier; Repertoire : in String) is
-   Liste_Chemin : Liste_U_String := Split(Repertoire);
+   Liste_Chemin : Liste_U_String := Split(Repertoire,'/');
    Elem : P_Liste_Contenu;
-begin
+   begin
    for i in Liste_Chemin'Range loop
       declare
          Nom_Segment : constant String := To_String(Liste_Chemin(i));
@@ -146,7 +160,12 @@ begin
             end if;
 
          else
+            begin
             Elem := Cur.all.Contenu;
+            exception
+               when Constraint_Error =>
+               raise Uninitialized_SGF;
+            end;
             while Elem /= null loop
                if (not Elem.all.Est_Fichier)
                   and then (Elem.all.Dossier /= null)
@@ -162,6 +181,10 @@ begin
    end loop;
 end Cd;
 
+procedure Modif_Taille(Chemin : in  String; Taille : Integer ; Fichier : out T_Fichier) is
+begin
+Fichier.Taille := Taille;
+end Modif_Taille;
 
 procedure Ls (Chemin : in String) is
 
@@ -231,15 +254,20 @@ end Lsr;
       null;
    end Cpr;
 
-   function Split(chemin : String) return Liste_U_String is
+   function Split(chemin : String ; symbole : Character) return Liste_U_String is
          Compteur : Integer := 1;
          index    : Integer := 1;
          start    : Integer := 1;
          partie   : Unbounded_String := To_Unbounded_String("");
+         Lst_U_vide : Liste_U_String(1..1);
       begin
          -- Count slashes to know the number of segments
+         if chemin = "" then
+         Lst_U_vide(1) := To_Unbounded_String("");
+         return Lst_U_vide;
+         end if;
          for i in chemin'Range loop
-            if chemin(i) = '/' then
+            if chemin(i) = symbole then
                Compteur := Compteur + 1;
             end if; 
          end loop;
@@ -247,14 +275,14 @@ end Lsr;
          declare
             Result : Liste_U_String(1..Compteur);
          begin
-            if chemin(1) = '/' then
+            if chemin(1) = symbole then
                Result(index) := To_Unbounded_String(" ");
                index := index + 1;
                start := start + 1;
             end if;
 
             for i in start..chemin'Length loop
-               if chemin(i) = '/' then
+               if chemin(i) = symbole then
                   Result(index) := partie;
                   index := index + 1;
                   partie := To_Unbounded_String("");
@@ -266,6 +294,8 @@ end Lsr;
             return Result;
          end;
       end Split;
+
+
 
 
 
