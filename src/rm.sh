@@ -7,4 +7,6 @@ rm main.ali
 rm main.o
 rm sgf.ali
 rm sgf.o
+rm disque.o
+rm disque.ali
 
