@@ -1,7 +1,11 @@
+
 with SGF; use SGF;
 with Ada.Text_IO;         use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Affichage; use Affichage;
+with Affichage_cmd; use Affichage_cmd;
+with Disque; use Disque;
 package body Affichage_cmd is
 
 
@@ -30,9 +34,6 @@ Cmd_Faire_Mkdir(Liste_param, Nb_El);
 
 else if Commande = "touch" or Commande = "TOUCH" or Commande = "Touch" then
 Cmd_Faire_Touch(Liste_param, Nb_El);
-
-
-
 
 else if Commande = "cd" or Commande = "CD" or Commande = "Cd" then
 Cmd_Faire_Cd(Liste_param, Nb_El);
@@ -86,12 +87,14 @@ procedure Cmd_Faire_Touch(Liste_param : Liste_U_String ; Nb_El : Integer) is
 Fi : T_Fichier;
 Str : string := To_String(Liste_param(2));
 Str2 : string := To_String(Liste_param(3));
+Str3 : string := To_String(Liste_param(4));
 Int : Integer := Integer'Value(Str2);
+Int2 : Integer := Integer'Value(Str3);
 begin
 
 case Nb_El is
-when 3 =>
-Touch(Fi,Str,Int);
+when 4 =>
+Touch(Fi,Int2,Str,Int);
 when others =>
 raise Incorect_Argument_Number;
 end case;

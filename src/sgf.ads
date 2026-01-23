@@ -51,7 +51,7 @@ package SGF is
    -- post : Affiche le répertoire courant
 
    -- Création d’un fichier avec le chemin courant
-   procedure Touch (Fi: out T_Fichier; Nom : in String; Droits : in Integer);
+   procedure Touch (Fi: out T_Fichier; Taille : in Integer; Nom : in String; Droits : in Integer);
 
 
    -- Création d’un fichier avec le chemin en paramètre

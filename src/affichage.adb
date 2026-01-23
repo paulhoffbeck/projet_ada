@@ -4,6 +4,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Affichage; use Affichage;
 with Affichage_cmd; use Affichage_cmd;
+with Disque; use Disque;
 
 package body Affichage is
    procedure Afficher_Banniere_Main is
@@ -48,6 +49,7 @@ package body Affichage is
    LongNom : Natural;
    LongChemin : Natural;
    Droits  : Integer;
+   Taille : Integer;
    Fi : T_Fichier;
    begin
       Skip_Line;
@@ -58,7 +60,9 @@ package body Affichage is
       Get_Line(Chemin, LongChemin);
       Put_Line("Quelles droits voulez vous (111 = rwe, 000 = rien, 010 = rien, write, rien )");
       Get(droits);
-      Touch(Fi,Nom(1..LongNom),Droits);
+      Put_Line("Quelle est la taille de votre fichier (en nombre d'octet)?");
+      Get(Taille);
+      Touch(Fi, Taille, Nom(1..LongNom),Droits);
    end Faire_Touch;
 
    procedure Faire_Modif_Taille is
@@ -117,6 +121,7 @@ package body Affichage is
       Put_Line ("|   5. Afficher le répertoire (ls)              |");
       Put_Line ("|   6. Afficher le chemin (pwd)                 |");
       Put_Line ("|   7. Modifier la taille                       |");
+      Put_Line ("|   8. Afficher l'espace restant sur le disque  |");
       Put_Line ("|   12. Revenir au chois de mode                |");
       Put_Line ("|                                               |");
       Put_Line ("|   Entrez votre choix (1-12)                   |");
@@ -147,6 +152,8 @@ package body Affichage is
             New_Line;
          when 7 => 
             Faire_Modif_Taille;
+         when 8 =>
+            Put_Line(Long_Integer'Image(disque_restant));
          when 12 =>
             Faux_Main;
          when others =>
