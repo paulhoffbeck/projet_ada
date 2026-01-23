@@ -216,6 +216,7 @@ end Lsr;
 
 procedure Lsr (Chemin : in String) is
 
+   liste_chemin : Liste_U_String;
    temp_chemin : P_Liste_Contenu;
    conten : P_Liste_Contenu;
 
@@ -238,10 +239,10 @@ procedure Lsr (Chemin : in String) is
    
 begin
    -- 1. split le chemin donné en entrée
-   -- liste_chemin := Split(Chemin);
+   liste_chemin := Split(Chemin);
 
    -- 2. retrouver le P_Liste_Contenu à partir de la liste extraite
-   Recherche_chemin(Chemin)
+  temp_chemin := Recherche_chemin(Chemin);
 
    -- 3. passer le P_Liste_Contenu en paramètre de Ls_rec
    Ls_rec(temp_chemin);
