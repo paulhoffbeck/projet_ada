@@ -44,6 +44,9 @@ Cmd_Faire_Ls(Liste_param, Nb_El);
 else if Commande = "pwd" or Commande = "PWD" or Commande = "Pwd" then
 Cmd_Faire_Pwd(Liste_param, Nb_El);
 
+else if Commande = "find" or Commande = "FIND" or Commande = "Find" then
+Cmd_Faire_Find(Liste_param, Nb_El);
+
 else if Commande ="" then
 null;
  
@@ -51,6 +54,7 @@ null;
 else
 Put_Line("Commande inconnue");
 
+end if;
 end if;
 end if;
 end if;
@@ -127,5 +131,43 @@ when others =>
 raise Incorect_Argument_Number;
 end case;
 end Cmd_Faire_Pwd;
+
+procedure Cmd_Faire_Find(Liste_param : Liste_U_String ; Nb_El : Integer) is
+Str : String := To_String(Liste_param(2));
+Choix : Boolean := Choix_Fi(Str);
+Fichier : P_Fichier := null;
+Dossier : P_Dossier := null;
+begin
+Case Nb_El is
+when 2 =>
+if Choix then
+ Fichier := Trouver_Fi(Str,Actuel);
+ if Fichier /= null then
+         Put_Line("=== Fichier trouvé ===");
+         Put_Line("Nom    : " & To_String(Fichier.all.Nom));
+         Put_Line("Taille : " & Integer'Image(Fichier.all.Taille));
+         Put_Line("Droits : " & Integer'Image(Fichier.all.Droits));
+      else
+         Put_Line("Fichier non trouvé.");
+      end if;
+else
+      Dossier := Trouver_Dos(Str,Actuel);
+      if Dossier /= null then
+         Put_Line("=== Dossier trouvé ===");
+         Put_Line("Nom    : " & To_String(Dossier.all.Nom));
+         Put_Line("Droits : " & Integer'Image(Dossier.all.Droits));
+         if Dossier.all.Dossier_Parent /= null then
+            Put_Line("Parent : " & To_String(Dossier.all.Dossier_Parent.all.Nom));
+         else
+            Put_Line("Parent : (racine)");
+         end if;
+      else
+         Put_Line("Dossier non trouvé.");
+      end if;
+end if;
+when others =>
+raise Incorect_Argument_Number;
+end case;
+end Cmd_Faire_Find;
 
 end Affichage_cmd;

@@ -121,8 +121,9 @@ package SGF is
    -- pre  : Chemin non vide
    -- post : Renvoie une liste de chaînes de caractères correspondant aux éléments du chemin
 
-   function Trouver_fichier(chemin : string) return T_Fichier;
-
+   function Trouver_El_R (Fichier : Boolean; Dossier: P_Dossier;Nom: String; Precedent : P_Dossier) return P_Dossier;
+   function Trouver_Fi(nom : string ; Dossier : P_Dossier) return P_Fichier;
+   function Trouver_Dos(nom : string ; Dossier : P_Dossier) return P_Dossier;
 private
    type Indexeur is new Integer;
 end SGF;

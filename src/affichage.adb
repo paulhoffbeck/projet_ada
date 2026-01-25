@@ -80,6 +80,62 @@ package body Affichage is
       Cd(Actuel,Chemin(1..LongChemin));
    end Faire_Cd;
 
+   function Choix_Fi(nom : string)return Boolean is
+   Fi : Boolean := False;
+   point : Character := '.';
+   begin
+   for J of nom loop
+      if J = point then
+         Fi := True;
+         return Fi;
+      end if;
+   end loop;
+   return Fi;
+   end Choix_Fi;
+
+procedure Faire_Trouver_El is
+   est_fichier : Boolean;
+   nom : String (1 .. 200);
+   L_nom : Natural;
+   Fichier : P_Fichier := null;
+   Dossier : P_Dossier := null;
+begin
+   Skip_Line;
+   Put("Nom de l'élément dans l'arborescence (ajoutez l'extension si c'est un fichier) : ");
+   Get_Line(nom, L_nom);
+
+   est_fichier := Choix_Fi(nom(1 .. L_nom));
+
+   if est_fichier then
+      Fichier := Trouver_Fi(nom(1 .. L_nom), Racine'Access);
+      if Fichier /= null then
+         Put_Line("=== Fichier trouvé ===");
+         Put_Line("Nom    : " & To_String(Fichier.all.Nom));
+         Put_Line("Taille : " & Integer'Image(Fichier.all.Taille));
+         Put_Line("Droits : " & Integer'Image(Fichier.all.Droits));
+      else
+         Put_Line("Fichier non trouvé.");
+      end if;
+
+   else
+      Dossier := Trouver_Dos(nom(1 .. L_nom), Racine'Access);
+
+      if Dossier /= null then
+         Put_Line("=== Dossier trouvé ===");
+         Put_Line("Nom    : " & To_String(Dossier.all.Nom));
+         Put_Line("Droits : " & Integer'Image(Dossier.all.Droits));
+         if Dossier.all.Dossier_Parent /= null then
+            Put_Line("Parent : " & To_String(Dossier.all.Dossier_Parent.all.Nom));
+         else
+            Put_Line("Parent : (racine)");
+         end if;
+      else
+         Put_Line("Dossier non trouvé.");
+      end if;
+   end if;
+end Faire_Trouver_El;
+
+
    procedure Faux_Main is
    choix : Integer;
    begin
@@ -122,6 +178,7 @@ package body Affichage is
       Put_Line ("|   6. Afficher le chemin (pwd)                 |");
       Put_Line ("|   7. Modifier la taille                       |");
       Put_Line ("|   8. Afficher l'espace restant sur le disque  |");
+      Put_Line ("|   9. Trouver un élément                       |");
       Put_Line ("|   12. Revenir au chois de mode                |");
       Put_Line ("|                                               |");
       Put_Line ("|   Entrez votre choix (1-12)                   |");
@@ -154,6 +211,8 @@ package body Affichage is
             Faire_Modif_Taille;
          when 8 =>
             Put_Line(Long_Integer'Image(disque_restant));
+         when 9 =>
+            Faire_Trouver_El;
          when 12 =>
             Faux_Main;
          when others =>

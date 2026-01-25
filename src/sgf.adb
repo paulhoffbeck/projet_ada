@@ -313,9 +313,85 @@ end Lsr;
          end;
       end Split;
 
+function Trouver_Fi(nom : string ; Dossier : P_Dossier) return P_Fichier is
+   est_fichier : Boolean := True;
+   Contenant : P_Dossier := Trouver_El_R(est_fichier, Dossier, nom, Actuel);
+   Contenue_du_contenant : P_Liste_Contenu;
+begin
+   if Contenant = null then
+      return null;
+   end if;
+
+   Contenue_du_contenant := Contenant.all.contenu;
+
+   while Contenue_du_contenant /= null loop
+      if Contenue_du_contenant.all.Est_Fichier
+        and then To_String(Contenue_du_contenant.all.Fichier.all.Nom) = Nom then
+   
+         return Contenue_du_contenant.all.Fichier;
+      end if;
+      Contenue_du_contenant := Contenue_du_contenant.all.Suivant;
+   end loop;
+
+   return null;
+end Trouver_Fi;
 
 
+function Trouver_Dos(nom : string ; Dossier : P_Dossier) return P_Dossier is
+   est_fichier : Boolean := False;
+   Contenant : P_Dossier := Trouver_El_R(est_fichier, Dossier, nom, Actuel);
+   Contenue_du_contenant : P_Liste_Contenu;
+begin
+   if Contenant = null then
+      return null;
+   end if;
+
+   Contenue_du_contenant := Contenant.all.contenu;
+   while Contenue_du_contenant /= null loop
+      if (not Contenue_du_contenant.all.Est_Fichier)
+        and then To_String(Contenue_du_contenant.all.Dossier.all.Nom) = Nom then
+         return Contenue_du_contenant.all.Dossier;
+      end if;
+      Contenue_du_contenant := Contenue_du_contenant.all.Suivant;
+   end loop;
+
+   return null;
+end Trouver_Dos;
 
 
+function Trouver_El_R (Fichier : Boolean; Dossier : P_Dossier;Nom     : String; Precedent : P_Dossier) return P_Dossier is
+Actuel : P_Liste_Contenu := Dossier.all.Contenu;
+begin
+   Put(Boolean'Image(Fichier));  
+   while Actuel /= null loop
+      if Actuel.all.Est_Fichier then
+         if Fichier then
 
+            if To_String (Actuel.all.Fichier.all.Nom) = Nom then
+               Put_Line("Fichier Identifié");
+               return Dossier;
+            end if;
+         end if;
+
+      else 
+         if not Fichier then
+            Put_Line("Dossier identifié");
+            if To_String (Actuel.all.Dossier.all.Nom) = Nom then
+               return Dossier;
+            end if;
+         end if;
+         declare
+            Result : P_Dossier := Trouver_El_R (Fichier,Actuel.all.Dossier,Nom,Dossier);
+         begin
+            if Result /= null then
+               return Result;
+            end if;
+         end;
+      end if;
+
+      Actuel := Actuel.all.Suivant;
+   end loop;
+
+   return null;
+end Trouver_El_R;
 end SGF;
