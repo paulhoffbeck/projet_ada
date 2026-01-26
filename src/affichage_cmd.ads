@@ -1,5 +1,8 @@
 with SGF; use SGF;
 package Affichage_cmd is
+
+--CONTRATS A FAIRE
+
 procedure Cmd;
 procedure Trouver_Commande(Commandes : in String);
 procedure Cmd_Faire_Mkdir(Liste_param : Liste_U_String ; Nb_El : Integer);

@@ -1,4 +1,7 @@
 package Disque is
+
+--CONTRATS A FAIRE
+
 type T_Slot;
 type P_Slot is access all T_Slot;
 type T_Slot is record

@@ -93,118 +93,118 @@ package body Affichage is
    return Fi;
    end Choix_Fi;
 
-procedure Faire_Trouver_El is
-   est_fichier : Boolean;
+   procedure Faire_Trouver_El is
+      est_fichier : Boolean;
+      nom : String (1 .. 200);
+      L_nom : Natural;
+      Fichier : P_Fichier := null;
+      Dossier : P_Dossier := null;
+   begin
+      Skip_Line;
+      Put("Nom de l'élément dans l'arborescence (ajoutez l'extension si c'est un fichier) : ");
+      Get_Line(nom, L_nom);
+
+      est_fichier := Choix_Fi(nom(1 .. L_nom));
+
+      if est_fichier then
+         Fichier := Trouver_Fi(nom(1 .. L_nom), Racine'Access);
+         if Fichier /= null then
+            Put_Line("=== Fichier trouvé ===");
+            Put_Line("Nom    : " & To_String(Fichier.all.Nom));
+            Put_Line("Taille : " & Integer'Image(Fichier.all.Taille));
+            Put_Line("Droits : " & Integer'Image(Fichier.all.Droits));
+         else
+            Put_Line("Fichier non trouvé.");
+         end if;
+
+      else
+         Dossier := Trouver_Dos(nom(1 .. L_nom), Racine'Access);
+
+         if Dossier /= null then
+            Put_Line("=== Dossier trouvé ===");
+            Put_Line("Nom    : " & To_String(Dossier.all.Nom));
+            Put_Line("Droits : " & Integer'Image(Dossier.all.Droits));
+            if Dossier.all.Dossier_Parent /= null then
+               Put_Line("Parent : " & To_String(Dossier.all.Dossier_Parent.all.Nom));
+            else
+               Put_Line("Parent : (racine)");
+            end if;
+         else
+            Put_Line("Dossier non trouvé.");
+         end if;
+      end if;
+   end Faire_Trouver_El;
+
+   procedure Faire_Supprimer is
    nom : String (1 .. 200);
    L_nom : Natural;
-   Fichier : P_Fichier := null;
-   Dossier : P_Dossier := null;
-begin
+   begin
    Skip_Line;
-   Put("Nom de l'élément dans l'arborescence (ajoutez l'extension si c'est un fichier) : ");
+   Put_Line("Quel est le chemin du fichier à supprimer");
    Get_Line(nom, L_nom);
+   Rm(nom(1..L_nom));
+   end Faire_Supprimer;
 
-   est_fichier := Choix_Fi(nom(1 .. L_nom));
+   procedure Faire_Copie is
+   Src : string(1..200);
+   L_Src : Natural;
 
-   if est_fichier then
-      Fichier := Trouver_Fi(nom(1 .. L_nom), Racine'Access);
-      if Fichier /= null then
-         Put_Line("=== Fichier trouvé ===");
-         Put_Line("Nom    : " & To_String(Fichier.all.Nom));
-         Put_Line("Taille : " & Integer'Image(Fichier.all.Taille));
-         Put_Line("Droits : " & Integer'Image(Fichier.all.Droits));
-      else
-         Put_Line("Fichier non trouvé.");
-      end if;
+   Dst : string(1..200);
+   L_Dst : Natural;
 
-   else
-      Dossier := Trouver_Dos(nom(1 .. L_nom), Racine'Access);
+   Nn:string(1..200);
+   L_Nn : Natural;
+   begin
+   Skip_Line;
+   Put_Line("Quel est le fichier a copier ");
+   Get_Line(Src, L_Src);
 
-      if Dossier /= null then
-         Put_Line("=== Dossier trouvé ===");
-         Put_Line("Nom    : " & To_String(Dossier.all.Nom));
-         Put_Line("Droits : " & Integer'Image(Dossier.all.Droits));
-         if Dossier.all.Dossier_Parent /= null then
-            Put_Line("Parent : " & To_String(Dossier.all.Dossier_Parent.all.Nom));
-         else
-            Put_Line("Parent : (racine)");
-         end if;
-      else
-         Put_Line("Dossier non trouvé.");
-      end if;
-   end if;
-end Faire_Trouver_El;
+   Put_Line("Quelle est la destination du fichier ");
+   Get_Line(Dst,L_Dst);
 
-procedure Faire_Supprimer is
-nom : String (1 .. 200);
-L_nom : Natural;
-begin
-Skip_Line;
-Put_Line("Quel est le chemin du fichier à supprimer");
-Get_Line(nom, L_nom);
-Rm(nom(1..L_nom));
-end Faire_Supprimer;
+   Put_Line("Quel est le nom de votre fichier (tapez rien si non)");
+   Get_Line(Nn, L_Nn);
 
-procedure Faire_Copie is
-Src : string(1..200);
-L_Src : Natural;
+   Cp(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
 
-Dst : string(1..200);
-L_Dst : Natural;
-
-Nn:string(1..200);
-L_Nn : Natural;
-begin
-Skip_Line;
-Put_Line("Quel est le fichier a copier ");
-Get_Line(Src, L_Src);
-
-Put_Line("Quelle est la destination du fichier ");
-Get_Line(Dst,L_Dst);
-
-Put_Line("Quel est le nom de votre fichier (tapez rien si non)");
-Get_Line(Nn, L_Nn);
-
-Cp(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
-
-end Faire_Copie;
+   end Faire_Copie;
 
 
 
-procedure Faire_Mv is
-Src : string(1..200);
-L_Src : Natural;
+   procedure Faire_Mv is
+   Src : string(1..200);
+   L_Src : Natural;
 
-Dst : string(1..200);
-L_Dst : Natural;
+   Dst : string(1..200);
+   L_Dst : Natural;
 
-Nn:string(1..200);
-L_Nn : Natural;
-begin
-Skip_Line;
-Put_Line("Quel est le fichier a bouger ");
-Get_Line(Src, L_Src);
+   Nn:string(1..200);
+   L_Nn : Natural;
+   begin
+   Skip_Line;
+   Put_Line("Quel est le fichier a bouger ");
+   Get_Line(Src, L_Src);
 
-Put_Line("Quelle est la destination du fichier ");
-Get_Line(Dst,L_Dst);
+   Put_Line("Quelle est la destination du fichier ");
+   Get_Line(Dst,L_Dst);
 
-Put_Line("Quel est le nom de votre fichier (tapez rien si non)");
-Get_Line(Nn, L_Nn);
+   Put_Line("Quel est le nom de votre fichier (tapez rien si non)");
+   Get_Line(Nn, L_Nn);
 
-Mv(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
-end Faire_Mv;
+   Mv(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
+   end Faire_Mv;
 
-procedure Faire_Tar is
-begin
-Skip_Line;
-Tar;
-Put_Line("Dossier courant archivé");
-end Faire_Tar;
+   procedure Faire_Tar is
+   begin
+   Skip_Line;
+   Tar;
+   Put_Line("Dossier courant archivé");
+   end Faire_Tar;
 
    procedure Faux_Main is
    choix : Integer;
    begin
-    while True loop
+   while True loop
       begin
          Afficher_Banniere_Main;
          Get(choix);
@@ -235,7 +235,7 @@ end Faire_Tar;
       Put_Line ("+-----------------------------------------------+");
       Put_Line ("|      Bienvenue dans le SGF mode menu          |");
       Put_Line ("|-----------------------------------------------|");
-      Put_Line ("|   1. Créer un SGF                             |");
+      Put_Line ("|   1. Initialiser le SGF                       |");
       Put_Line ("|   2. Créer un dossier (mkdir)                 |");
       Put_Line ("|   3. Créer un fichier (touch)                 |");
       Put_Line ("|   4. Changer de répertoire (cd)               |");
