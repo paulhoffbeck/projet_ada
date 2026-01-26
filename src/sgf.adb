@@ -330,10 +330,14 @@ end Recherche_chemin;
    end Rmr;
 
 
-   procedure Mv (Dos : in out T_Dossier; Dest : in String; Nom : in String) is
+   procedure Mv (Dos : in out T_Dossier; Fichier : in string; Dest : in String; Nom : in String) is
+   Copie_Actuel : P_Dossier := Actuel;
    begin
-      null;
-   end Mv;
+      Cp(Dos,Fichier, Dest,Nom);
+      Actuel := Copie_Actuel;
+      Rm (Fichier);
+   end Mv;    
+
 
 
    procedure Cp (Dos : in T_Dossier; Fichier : in String; Destination : in String ; Nouveau_nom : in string) is
@@ -411,6 +415,32 @@ begin
 
    return null;
 end Trouver_Fi;
+
+procedure Tar is
+      Archive : T_Fichier;
+      Taille_Totale : Integer;
+      function Taille_Dossier (Dos : in P_Dossier) return Integer is
+         Courant : P_Liste_Contenu := Dos.all.Contenu;
+         Taille : Integer := 10;
+      begin
+         while Courant /= null loop
+            if Courant.all.Est_Fichier then
+               Taille := Taille + Courant.all.Fichier.all.Taille;
+            else
+               Taille := Taille + Taille_Dossier(Courant.all.Dossier);
+            end if;
+            Courant := Courant.all.Suivant;
+         end loop;
+         return Taille;
+      end Taille_Dossier;
+      Nom_Archive : constant String := To_String(Actuel.all.Nom) & ".tar";
+   begin
+      if Actuel = null then
+         raise Uninitialized_SGF;
+      end if;
+      Taille_Totale := Taille_Dossier(Actuel);
+      Touch(Archive, Taille_Totale, Nom_Archive, 2#110#);  -- droits rw-
+   end Tar;
 
 
 function Trouver_Dos(nom : string ; Dossier : P_Dossier) return P_Dossier is

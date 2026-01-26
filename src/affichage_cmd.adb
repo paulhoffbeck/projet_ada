@@ -47,6 +47,14 @@ Cmd_Faire_Pwd(Liste_param, Nb_El);
 else if Commande = "find" or Commande = "FIND" or Commande = "Find" then
 Cmd_Faire_Find(Liste_param, Nb_El);
 
+else if Commande = "cp" or Commande = "CP" or Commande = "Cp" then
+Cmd_Faire_Cp (Liste_param, Nb_El);
+else if Commande = "mv" or Commande = "MV" or Commande = "Mv" then
+Cmd_Faire_Mv (Liste_param, Nb_El);
+
+else if Commande = "tar" or Commande = "TAR" or Commande = "Tar" then
+Tar;
+
 else if Commande ="" then
 null;
  
@@ -54,6 +62,9 @@ null;
 else
 Put_Line("Commande inconnue");
 
+end if;
+end if;
+end if;
 end if;
 end if;
 end if;
@@ -169,5 +180,31 @@ when others =>
 raise Incorect_Argument_Number;
 end case;
 end Cmd_Faire_Find;
+
+procedure Cmd_Faire_Mv(Liste_param : Liste_U_String ; Nb_El : Integer) is
+Src : string := To_String(Liste_param(2));
+Dst : string := To_String(Liste_param(3));
+Nn : string := To_String(Liste_param(4));
+begin
+Case Nb_El is
+when 4 =>
+Mv(Actuel.all,Src,Dst,Nn);
+when others =>
+raise Incorect_Argument_Number;
+end case;
+end Cmd_Faire_Mv;
+
+procedure Cmd_Faire_Cp(Liste_param : Liste_U_String ; Nb_El : Integer) is
+Src : string := To_String(Liste_param(2));
+Dst : string := To_String(Liste_param(3));
+Nn : string := To_String(Liste_param(4));
+begin
+Case Nb_El is
+when 4 =>
+Cp(Actuel.all,Src,Dst,Nn);
+when others =>
+raise Incorect_Argument_Number;
+end case;
+end Cmd_Faire_Cp;
 
 end Affichage_cmd;
