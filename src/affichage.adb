@@ -192,8 +192,14 @@ Put_Line("Quel est le nom de votre fichier (tapez rien si non)");
 Get_Line(Nn, L_Nn);
 
 Mv(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
-
 end Faire_Mv;
+
+procedure Faire_Tar is
+begin
+Skip_Line;
+Tar;
+Put_Line("Dossier courant archivé");
+end Faire_Tar;
 
    procedure Faux_Main is
    choix : Integer;
@@ -241,7 +247,8 @@ end Faire_Mv;
       Put_Line ("|   10. Supprimer un élément                    |");
       Put_Line ("|   11. Copier un élément                       |");
       Put_Line ("|   12. Deplacer un élément                     |");
-      Put_Line ("|   13. Revenir au chois de mode                |");
+      Put_Line ("|   13. Archiver le répertoire courant          |");
+      Put_Line ("|   14. Revenir au chois de mode                |");
       Put_Line ("|                                               |");
       Put_Line ("|   Entrez votre choix (1-13)                   |");
       Put_Line ("+-----------------------------------------------+");
@@ -282,6 +289,8 @@ end Faire_Mv;
          when 12 =>
             Faire_Mv;
          when 13 =>
+            Faire_Tar;
+         when 14=>
             Faux_Main;
          when others =>
             raise Bad_Choice_Number;

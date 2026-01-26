@@ -68,6 +68,7 @@ package SGF is
    -- pre  : Dossier initialisé
    -- post : Ajoute un dossier vide
    
+   procedure Tar;
 
    -- Changement du répertoire courant
    procedure Cd (Cur : in out P_Dossier ; Repertoire : in String);
