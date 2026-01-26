@@ -285,9 +285,12 @@ end Lsr;
    end Rmr;
 
 
-   procedure Mv (Dos : in out T_Dossier; Dest : in String; Nom : in String) is
+   procedure Mv (Dos : in out T_Dossier; Fichier : in string; Dest : in String; Nom : in String) is
+   Copie_Actuel : P_Dossier := Actuel;
    begin
-      null;
+      Cp(Dos,Fichier, Dest,Nom);
+      Actuel := Copie_Actuel;
+      Rm (Fichier);
    end Mv;
 
 

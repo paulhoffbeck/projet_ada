@@ -170,6 +170,31 @@ Cp(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
 end Faire_Copie;
 
 
+
+procedure Faire_Mv is
+Src : string(1..200);
+L_Src : Natural;
+
+Dst : string(1..200);
+L_Dst : Natural;
+
+Nn:string(1..200);
+L_Nn : Natural;
+begin
+Skip_Line;
+Put_Line("Quel est le fichier a bouger ");
+Get_Line(Src, L_Src);
+
+Put_Line("Quelle est la destination du fichier ");
+Get_Line(Dst,L_Dst);
+
+Put_Line("Quel est le nom de votre fichier (tapez rien si non)");
+Get_Line(Nn, L_Nn);
+
+Mv(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
+
+end Faire_Mv;
+
    procedure Faux_Main is
    choix : Integer;
    begin
@@ -215,9 +240,10 @@ end Faire_Copie;
       Put_Line ("|   9. Trouver un élément                       |");
       Put_Line ("|   10. Supprimer un élément                    |");
       Put_Line ("|   11. Copier un élément                       |");
-      Put_Line ("|   12. Revenir au chois de mode                |");
+      Put_Line ("|   12. Deplacer un élément                     |");
+      Put_Line ("|   13. Revenir au chois de mode                |");
       Put_Line ("|                                               |");
-      Put_Line ("|   Entrez votre choix (1-12)                   |");
+      Put_Line ("|   Entrez votre choix (1-13)                   |");
       Put_Line ("+-----------------------------------------------+");
    end Afficher_Banniere_Menu;
 
@@ -254,6 +280,8 @@ end Faire_Copie;
          when 11 => 
             Faire_Copie;
          when 12 =>
+            Faire_Mv;
+         when 13 =>
             Faux_Main;
          when others =>
             raise Bad_Choice_Number;

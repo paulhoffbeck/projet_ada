@@ -106,11 +106,11 @@ package SGF is
    -- post : Dossier et sous-dossiers supprimés
 
    -- Déplacement ou renommage d’un fichier
-   procedure Mv (Dos : in out T_Dossier; Dest : in String; Nom : in String);
+   procedure Mv (Dos : in out T_Dossier; Fichier : in String; Dest : in String; Nom : in String);
    -- pre  : Dossier initialisé
    -- post : Fichier déplacé ou renommé
 
-   -- Copie récursive d’un fichier ou dossier
+   -- Copie d’un fichier ou dossier
    procedure Cp (Dos : in T_Dossier; Fichier : in String; Destination : in String ; Nouveau_nom : in string);
    -- pre  : Dossier initialisé, élément existant
    -- post : Copie effectuée
