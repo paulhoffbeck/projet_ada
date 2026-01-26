@@ -299,7 +299,7 @@ end Lsr;
    if Nouveau_nom /= "rien" then
    Copie_Fichier.Nom := To_Unbounded_String(Nouveau_nom);
    end if;
-   Cd(Copie_Actuel,Destination);
+   Cd(Actuel,Destination);
    Touch(Fi,Copie_Fichier.Taille,To_String(Copie_Fichier.Nom),Copie_Fichier.Droits);
    end Cp;
 

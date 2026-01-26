@@ -145,6 +145,30 @@ Get_Line(nom, L_nom);
 Rm(nom(1..L_nom));
 end Faire_Supprimer;
 
+procedure Faire_Copie is
+Src : string(1..200);
+L_Src : Natural;
+
+Dst : string(1..200);
+L_Dst : Natural;
+
+Nn:string(1..200);
+L_Nn : Natural;
+begin
+Skip_Line;
+Put_Line("Quel est le fichier a copier ");
+Get_Line(Src, L_Src);
+
+Put_Line("Quelle est la destination du fichier ");
+Get_Line(Dst,L_Dst);
+
+Put_Line("Quel est le nom de votre fichier (tapez rien si non)");
+Get_Line(Nn, L_Nn);
+
+Cp(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
+
+end Faire_Copie;
+
 
    procedure Faux_Main is
    choix : Integer;
