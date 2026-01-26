@@ -36,10 +36,10 @@ begin
       if conten.all.Est_Fichier = True then
          Put (To_String(conten.all.Fichier.all.Nom));
          Put (conten.all.Fichier.all.Taille);
-         Put (conten.all.Fichier.all.Droits);
+         Put_Line (conten.all.Fichier.all.Droits);
       else
          Put (To_String(conten.all.Dossier.all.Nom));
-         Put (conten.all.Dossier.all.Droits);
+         Put_Line (conten.all.Dossier.all.Droits);
       end if;
       conten := conten.all.Suivant;
    end loop;
@@ -217,12 +217,27 @@ end Ls;
 
 procedure Lsr is
 begin
-   null;
-end;
+   conten := Actuel; -- Actuel de type P_Liste_Contenu
+   while conten /= null loop
+      if conten.all.Est_Fichier = True then
+         Put (To_String(conten.all.Fichier.all.Nom));
+         Put (conten.all.Fichier.all.Taille);
+         Put (conten.all.Fichier.all.Droits);
+      else
+         Put (To_String(conten.all.Dossier.all.Nom));
+         Put (conten.all.Dossier.all.Droits);
+         Ls_rec (conten.all.Dossier.all.Contenu);
+      end if;
+      conten := conten.all.Suivant;
+   end loop;
+end Lsr;
 
 procedure Lsr (Chemin : in String) is
 
+   liste_chemin : Liste_U_String;
+   temp_chemin : P_Liste_Contenu;
    conten : P_Liste_Contenu;
+   i : Integer;
 
    procedure Ls_rec(Dos : in P_Liste_Contenu) is
    begin
@@ -243,10 +258,40 @@ procedure Lsr (Chemin : in String) is
    
 begin
    -- 1. split le chemin donné en entrée
+   liste_chemin := Split(Chemin);
+
    -- 2. retrouver le P_Liste_Contenu à partir de la liste extraite
+  temp_chemin := Recherche_chemin(Chemin);
+
    -- 3. passer le P_Liste_Contenu en paramètre de Ls_rec
-   null;
+   Ls_rec(temp_chemin);
+
 end Lsr;
+
+procedure Recherche_chemin(Chemin : in String) return P_Dossier is
+begin
+   liste_chemin := Split(Chemin);
+   conten := Racine.Contenu;
+   while conten /= null loop
+      if conten.all.Est_Fichier = True then
+         Put ("Le dossier renseigné est un fichier");
+      else if (not conten.all.Est_Fichier)
+               and then (conten.all.Dossier /= null)
+               and then (To_String(conten.all.Dossier.all.Nom) = liste_chemin'Last) then
+         Elem := conten;
+         while Elem /= null loop
+            if (not Elem.all.Est_Fichier)
+               and then (Elem.all.Dossier /= null)
+               and then (To_String(Elem.all.Dossier.all.Nom) = Nom_Segment)
+            then
+               Cur := Elem.all.Dossier;
+               exit;
+            end if;
+            Elem := Elem.all.Suivant;     
+      end if;
+      conten := conten.all.Suivant;
+   end loop;
+end Recherche_chemin;
 
 
    procedure Rm (Dos : in out T_Dossier; Index : in Indexeur) is
