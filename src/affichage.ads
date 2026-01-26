@@ -6,7 +6,8 @@ package Affichage is
    procedure Faire_Init;
    procedure Faire_Dossier;
    procedure Faire_Touch;
-   
+   procedure Faire_Trouver_El;
+   function Choix_Fi(nom : string)return Boolean;
    Bad_Choice_Number : exception;
    Sortie : exception;
 end Affichage;

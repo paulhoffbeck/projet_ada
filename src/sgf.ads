@@ -51,7 +51,7 @@ package SGF is
    -- post : Affiche le répertoire courant
 
    -- Création d’un fichier avec le chemin courant
-   procedure Touch (Fi: out T_Fichier; Nom : in String; Droits : in Integer);
+   procedure Touch (Fi: out T_Fichier; Taille : in Integer; Nom : in String; Droits : in Integer);
 
 
    -- Création d’un fichier avec le chemin en paramètre
@@ -121,8 +121,9 @@ package SGF is
    -- pre  : Chemin non vide
    -- post : Renvoie une liste de chaînes de caractères correspondant aux éléments du chemin
 
-   function Trouver_fichier(chemin : string) return T_Fichier;
-
+   function Trouver_El_R (Fichier : Boolean; Dossier: P_Dossier;Nom: String; Precedent : P_Dossier) return P_Dossier;
+   function Trouver_Fi(nom : string ; Dossier : P_Dossier) return P_Fichier;
+   function Trouver_Dos(nom : string ; Dossier : P_Dossier) return P_Dossier;
 private
    type Indexeur is new Integer;
 end SGF;

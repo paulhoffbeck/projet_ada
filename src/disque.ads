@@ -19,4 +19,6 @@ procedure Ajouter_Slot(slot : T_Slot);
 function Trouver_Slot(id : Integer) return P_Slot;
 function Check_Restant(taille : Integer) return Boolean;
 
+No_Remaining_Place : exception;
+
 end Disque;

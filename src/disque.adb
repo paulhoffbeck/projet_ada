@@ -5,6 +5,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Affichage; use Affichage;
 with Affichage_cmd; use Affichage_cmd;
+with Disque; use Disque;
 with Ada.Unchecked_Deallocation;
 
 package body Disque is
@@ -81,7 +82,6 @@ end Modif;
 
 function Trouver_Slot(id : in integer) return P_Slot is
    Actuel : P_Slot := emplacement_origin.all.suivant;
-
 begin
    while Actuel /= null loop
       if Actuel.all.address = id then

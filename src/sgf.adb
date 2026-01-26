@@ -1,7 +1,11 @@
-with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Integer_Text_IO; use Ada.Integer_Text_IO; -- Permet d'afficher des entiers via Put()
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded; -- Permet d'utiliser des chaînes de char variables
 
+with SGF; use SGF;
+with Ada.Text_IO;         use Ada.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Affichage; use Affichage;
+with Affichage_cmd; use Affichage_cmd;
+with Disque; use Disque;
 package body SGF is   
 
 procedure Init_SGF is
@@ -10,8 +14,10 @@ begin
    Racine.Droits := 2#111#; -- read, write, exec
    Racine.Dossier_Parent := null;
    Racine.Contenu := null;
-
+   --PEUT ETRE VERIFIER QUE LE DISQUE EST TOTALEMENT REMPLIS
    Actuel := Racine'Access;
+
+   disque_restant := disque_restant- 10;
 end Init_SGF;
 
 procedure Ls is
@@ -60,11 +66,16 @@ begin
 end Pwd;
 
 
-   procedure Touch (Fi: out T_Fichier; Nom : in String; Droits : in Integer) is
+   procedure Touch (Fi: out T_Fichier; Taille : in integer; Nom : in String; Droits : in Integer) is
       Li_cont : P_Liste_Contenu;
+      N_Slot : T_Slot;
    begin
+      if not Check_Restant (Taille) then
+         raise No_Remaining_Place;
+      end if;
+
       Fi.Nom := To_Unbounded_String(Nom);
-      Fi.Taille := 0;
+      Fi.Taille := Taille;
       Fi.Droits := Droits;
 
       Li_cont := new T_Liste_Contenu;
@@ -85,6 +96,7 @@ end Pwd;
             C.all.Suivant := Li_cont;
          end;
       end if;
+      Creation (N_Slot, Taille);
       exception
       when Constraint_Error =>
       raise Uninitialized_SGF;
@@ -114,7 +126,12 @@ procedure Mkdir (Chemin : in String; Nom : in String; Droits : in Integer; Paren
    P_Nouveau_Dossier : P_Dossier;
    P_Liste_Contenu_Nouveau : P_Liste_Contenu;
    Dernier : P_Liste_Contenu;
+   Taille : integer :=10;
+   N_Slot : T_Slot;
 begin
+   if not Check_Restant (Taille) then
+      raise No_Remaining_Place;
+   end if;
    Cd(Dossier_Acuel, Chemin);
    Nouveau_Dossier.Nom := To_Unbounded_String(Nom);
    Nouveau_Dossier.Droits := Droits;
@@ -136,6 +153,7 @@ begin
       end loop;
       Dernier.all.Suivant := P_Liste_Contenu_Nouveau;
    end if;
+   Creation (N_Slot, Taille);
 end Mkdir;
 
 
@@ -295,9 +313,85 @@ end Lsr;
          end;
       end Split;
 
+function Trouver_Fi(nom : string ; Dossier : P_Dossier) return P_Fichier is
+   est_fichier : Boolean := True;
+   Contenant : P_Dossier := Trouver_El_R(est_fichier, Dossier, nom, Actuel);
+   Contenue_du_contenant : P_Liste_Contenu;
+begin
+   if Contenant = null then
+      return null;
+   end if;
+
+   Contenue_du_contenant := Contenant.all.contenu;
+
+   while Contenue_du_contenant /= null loop
+      if Contenue_du_contenant.all.Est_Fichier
+        and then To_String(Contenue_du_contenant.all.Fichier.all.Nom) = Nom then
+   
+         return Contenue_du_contenant.all.Fichier;
+      end if;
+      Contenue_du_contenant := Contenue_du_contenant.all.Suivant;
+   end loop;
+
+   return null;
+end Trouver_Fi;
 
 
+function Trouver_Dos(nom : string ; Dossier : P_Dossier) return P_Dossier is
+   est_fichier : Boolean := False;
+   Contenant : P_Dossier := Trouver_El_R(est_fichier, Dossier, nom, Actuel);
+   Contenue_du_contenant : P_Liste_Contenu;
+begin
+   if Contenant = null then
+      return null;
+   end if;
+
+   Contenue_du_contenant := Contenant.all.contenu;
+   while Contenue_du_contenant /= null loop
+      if (not Contenue_du_contenant.all.Est_Fichier)
+        and then To_String(Contenue_du_contenant.all.Dossier.all.Nom) = Nom then
+         return Contenue_du_contenant.all.Dossier;
+      end if;
+      Contenue_du_contenant := Contenue_du_contenant.all.Suivant;
+   end loop;
+
+   return null;
+end Trouver_Dos;
 
 
+function Trouver_El_R (Fichier : Boolean; Dossier : P_Dossier;Nom     : String; Precedent : P_Dossier) return P_Dossier is
+Actuel : P_Liste_Contenu := Dossier.all.Contenu;
+begin
+   Put(Boolean'Image(Fichier));  
+   while Actuel /= null loop
+      if Actuel.all.Est_Fichier then
+         if Fichier then
 
+            if To_String (Actuel.all.Fichier.all.Nom) = Nom then
+               Put_Line("Fichier Identifié");
+               return Dossier;
+            end if;
+         end if;
+
+      else 
+         if not Fichier then
+            Put_Line("Dossier identifié");
+            if To_String (Actuel.all.Dossier.all.Nom) = Nom then
+               return Dossier;
+            end if;
+         end if;
+         declare
+            Result : P_Dossier := Trouver_El_R (Fichier,Actuel.all.Dossier,Nom,Dossier);
+         begin
+            if Result /= null then
+               return Result;
+            end if;
+         end;
+      end if;
+
+      Actuel := Actuel.all.Suivant;
+   end loop;
+
+   return null;
+end Trouver_El_R;
 end SGF;
