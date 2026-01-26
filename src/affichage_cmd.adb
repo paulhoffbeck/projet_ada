@@ -47,6 +47,9 @@ Cmd_Faire_Pwd(Liste_param, Nb_El);
 else if Commande = "find" or Commande = "FIND" or Commande = "Find" then
 Cmd_Faire_Find(Liste_param, Nb_El);
 
+else if Commande = "tar" or Commande = "TAR" or Commande = "Tar" then
+Tar;
+
 else if Commande ="" then
 null;
  
@@ -54,6 +57,7 @@ null;
 else
 Put_Line("Commande inconnue");
 
+end if;
 end if;
 end if;
 end if;
