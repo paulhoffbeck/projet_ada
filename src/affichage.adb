@@ -135,6 +135,16 @@ begin
    end if;
 end Faire_Trouver_El;
 
+procedure Faire_Supprimer is
+nom : String (1 .. 200);
+L_nom : Natural;
+begin
+Skip_Line;
+Put_Line("Quel est le chemin du fichier à supprimer");
+Get_Line(nom, L_nom);
+Rm(nom(1..L_nom));
+end Faire_Supprimer;
+
 
    procedure Faux_Main is
    choix : Integer;
@@ -179,6 +189,8 @@ end Faire_Trouver_El;
       Put_Line ("|   7. Modifier la taille                       |");
       Put_Line ("|   8. Afficher l'espace restant sur le disque  |");
       Put_Line ("|   9. Trouver un élément                       |");
+      Put_Line ("|   10. Supprimer un élément                    |");
+      Put_Line ("|   11. Copier un élément                       |");
       Put_Line ("|   12. Revenir au chois de mode                |");
       Put_Line ("|                                               |");
       Put_Line ("|   Entrez votre choix (1-12)                   |");
@@ -213,6 +225,10 @@ end Faire_Trouver_El;
             Put_Line(Long_Integer'Image(disque_restant));
          when 9 =>
             Faire_Trouver_El;
+         when 10 =>
+            Faire_Supprimer;
+         when 11 => 
+            Faire_Copie;
          when 12 =>
             Faux_Main;
          when others =>
