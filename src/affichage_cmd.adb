@@ -1,7 +1,11 @@
+
 with SGF; use SGF;
 with Ada.Text_IO;         use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Affichage; use Affichage;
+with Affichage_cmd; use Affichage_cmd;
+with Disque; use Disque;
 package body Affichage_cmd is
 
 
@@ -31,9 +35,6 @@ Cmd_Faire_Mkdir(Liste_param, Nb_El);
 else if Commande = "touch" or Commande = "TOUCH" or Commande = "Touch" then
 Cmd_Faire_Touch(Liste_param, Nb_El);
 
-
-
-
 else if Commande = "cd" or Commande = "CD" or Commande = "Cd" then
 Cmd_Faire_Cd(Liste_param, Nb_El);
 
@@ -43,6 +44,9 @@ Cmd_Faire_Ls(Liste_param, Nb_El);
 else if Commande = "pwd" or Commande = "PWD" or Commande = "Pwd" then
 Cmd_Faire_Pwd(Liste_param, Nb_El);
 
+else if Commande = "find" or Commande = "FIND" or Commande = "Find" then
+Cmd_Faire_Find(Liste_param, Nb_El);
+
 else if Commande ="" then
 null;
  
@@ -50,6 +54,7 @@ null;
 else
 Put_Line("Commande inconnue");
 
+end if;
 end if;
 end if;
 end if;
@@ -86,12 +91,14 @@ procedure Cmd_Faire_Touch(Liste_param : Liste_U_String ; Nb_El : Integer) is
 Fi : T_Fichier;
 Str : string := To_String(Liste_param(2));
 Str2 : string := To_String(Liste_param(3));
+Str3 : string := To_String(Liste_param(4));
 Int : Integer := Integer'Value(Str2);
+Int2 : Integer := Integer'Value(Str3);
 begin
 
 case Nb_El is
-when 3 =>
-Touch(Fi,Str,Int);
+when 4 =>
+Touch(Fi,Int2,Str,Int);
 when others =>
 raise Incorect_Argument_Number;
 end case;
@@ -124,5 +131,43 @@ when others =>
 raise Incorect_Argument_Number;
 end case;
 end Cmd_Faire_Pwd;
+
+procedure Cmd_Faire_Find(Liste_param : Liste_U_String ; Nb_El : Integer) is
+Str : String := To_String(Liste_param(2));
+Choix : Boolean := Choix_Fi(Str);
+Fichier : P_Fichier := null;
+Dossier : P_Dossier := null;
+begin
+Case Nb_El is
+when 2 =>
+if Choix then
+ Fichier := Trouver_Fi(Str,Actuel);
+ if Fichier /= null then
+         Put_Line("=== Fichier trouvé ===");
+         Put_Line("Nom    : " & To_String(Fichier.all.Nom));
+         Put_Line("Taille : " & Integer'Image(Fichier.all.Taille));
+         Put_Line("Droits : " & Integer'Image(Fichier.all.Droits));
+      else
+         Put_Line("Fichier non trouvé.");
+      end if;
+else
+      Dossier := Trouver_Dos(Str,Actuel);
+      if Dossier /= null then
+         Put_Line("=== Dossier trouvé ===");
+         Put_Line("Nom    : " & To_String(Dossier.all.Nom));
+         Put_Line("Droits : " & Integer'Image(Dossier.all.Droits));
+         if Dossier.all.Dossier_Parent /= null then
+            Put_Line("Parent : " & To_String(Dossier.all.Dossier_Parent.all.Nom));
+         else
+            Put_Line("Parent : (racine)");
+         end if;
+      else
+         Put_Line("Dossier non trouvé.");
+      end if;
+end if;
+when others =>
+raise Incorect_Argument_Number;
+end case;
+end Cmd_Faire_Find;
 
 end Affichage_cmd;

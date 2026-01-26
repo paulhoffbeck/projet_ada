@@ -2,9 +2,9 @@ with SGF; use SGF;
 with Ada.Text_IO;         use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
-
 with Affichage; use Affichage;
 with Affichage_cmd; use Affichage_cmd;
+with Disque; use Disque;
 
 procedure Main is
 choix : Integer;
