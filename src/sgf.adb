@@ -219,6 +219,7 @@ procedure Lsr (Chemin : in String) is
    liste_chemin : Liste_U_String;
    temp_chemin : P_Liste_Contenu;
    conten : P_Liste_Contenu;
+   i : Integer;
 
    procedure Ls_rec(Dos : in P_Liste_Contenu) is
    begin
@@ -256,9 +257,9 @@ begin
    while conten /= null loop
       if conten.all.Est_Fichier = True then
          Put ("Le dossier renseigné est un fichier");
-      else if (not Elem.all.Est_Fichier)
-               and then (Elem.all.Dossier /= null)
-               and then (To_String(Elem.all.Dossier.all.Nom) = liste_chemin(i)) then
+      else if (not conten.all.Est_Fichier)
+               and then (conten.all.Dossier /= null)
+               and then (To_String(conten.all.Dossier.all.Nom) = liste_chemin'Last) then
          Elem := conten;
          while Elem /= null loop
             if (not Elem.all.Est_Fichier)
@@ -268,9 +269,7 @@ begin
                Cur := Elem.all.Dossier;
                exit;
             end if;
-            Elem := Elem.all.Suivant;
-
-         
+            Elem := Elem.all.Suivant;     
       end if;
       conten := conten.all.Suivant;
    end loop;
