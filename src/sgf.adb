@@ -8,16 +8,14 @@ with Affichage_cmd; use Affichage_cmd;
 with Disque; use Disque;
 package body SGF is   
 
-procedure Init_SGF is
+procedure Init_SGF is --Initialise le dossier racine
 begin
-   Racine.Nom := To_Unbounded_String("/");
+   Racine.Nom := To_Unbounded_String("/"); --U_String pour avoir des noms dynamiques
    Racine.Droits := 2#111#; -- read, write, exec
-   Racine.Dossier_Parent := null;
-   Racine.Contenu := null;
-   --PEUT ETRE VERIFIER QUE LE DISQUE EST TOTALEMENT REMPLIS
-   Actuel := Racine'Access;
-
-   disque_restant := disque_restant- 10;
+   Racine.Dossier_Parent := null; --La racine n'a par définition pas de parent
+   Racine.Contenu := null; --Initialisation par défaut
+   Actuel := Racine'Access; --Initialisation de la variable globale access
+   disque_restant := disque_restant- 10; --On enlève la place prise par la racine (10 octets)
 end Init_SGF;
 
 procedure Ls is
@@ -51,7 +49,7 @@ procedure Pwd is
    begin
       if D.all.Dossier_Parent = null then
          Put ("/");
-         Put_Line ("Dossier actuel : /");
+         Put ("Dossier actuel : /");
       else
          Afficher_Chemin (D.all.Dossier_Parent);
          Put (To_String(D.all.Nom));
@@ -73,7 +71,6 @@ end Pwd;
       if not Check_Restant (Taille) then
          raise No_Remaining_Place;
       end if;
-
       Fi.Nom := To_Unbounded_String(Nom);
       Fi.Taille := Taille;
       Fi.Droits := Droits;
@@ -111,13 +108,6 @@ end Pwd;
    end Touch;
 
 
-function Trouver_fichier (Chemin : String) return T_Fichier is
-Fi : T_Fichier;
-begin
-null;
-return Fi;
-
-end Trouver_fichier;
 
 
 procedure Mkdir (Chemin : in String; Nom : in String; Droits : in Integer; Parent : in P_Dossier) is
@@ -294,10 +284,44 @@ begin
 end Recherche_chemin;
 
 
-   procedure Rm (Dos : in out T_Dossier; Index : in Indexeur) is
+   procedure Rm (Chemin : String) is
+      Liste    : Liste_U_String := Split(Chemin, '/');
+      Courant  : P_Dossier := Actuel;
+      Cible    : Unbounded_String;
+      Precedent : P_Liste_Contenu;
+      Parcours : P_Liste_Contenu;
    begin
-      null;
+      if Courant = null then
+         raise Uninitialized_SGF;
+      end if;
+      for I in 1 .. Liste'Length - 1 loop
+         Courant := Trouver_Dos(To_String(Liste(I)), Courant);
+         if Courant = null then
+            Put_Line("Dossier inexistant");
+            return;
+         end if;
+      end loop;
+      Cible := Liste(Liste'Last);
+      Precedent := null;
+      Parcours  := Courant.Contenu;
+
+      while Parcours /= null loop
+         if Parcours.Est_Fichier and then To_String(Parcours.Fichier.Nom) = To_String(Cible) then
+            if Precedent = null then
+               Courant.Contenu := Parcours.Suivant;
+            else
+               Precedent.Suivant := Parcours.Suivant;
+            end if;
+
+            return;
+         end if;
+
+         Precedent := Parcours;
+         Parcours  := Parcours.Suivant;
+      end loop;
    end Rm;
+
+
 
 
    procedure Rmr (Dos : in out T_Dossier; Chemin : in String) is
@@ -312,10 +336,17 @@ end Recherche_chemin;
    end Mv;
 
 
-   procedure Cpr (Dos : in T_Dossier; Element : in String; Destination : in String) is
+   procedure Cp (Dos : in T_Dossier; Fichier : in String; Destination : in String ; Nouveau_nom : in string) is
+   Copie_Fichier : T_Fichier := Trouver_Fi (Fichier, Actuel).all;
+   Copie_Actuel : P_Dossier := Actuel;
+   Fi : T_Fichier;
    begin
-      null;
-   end Cpr;
+   if Nouveau_nom /= "rien" then
+   Copie_Fichier.Nom := To_Unbounded_String(Nouveau_nom);
+   end if;
+   Cd(Actuel,Destination);
+   Touch(Fi,Copie_Fichier.Taille,To_String(Copie_Fichier.Nom),Copie_Fichier.Droits);
+   end Cp;
 
    function Split(chemin : String ; symbole : Character) return Liste_U_String is
          Compteur : Integer := 1;
