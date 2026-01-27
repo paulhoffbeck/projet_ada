@@ -3,6 +3,7 @@
 *.ali
 *.exe
 main
+test
 
 # Répertoires de build GNAT
 obj/
@@ -18,3 +19,6 @@ bin/
 
 # Logs
 *.log
+
+# Scripts
+*.sh

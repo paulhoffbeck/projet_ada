@@ -44,26 +44,6 @@ package body SGF is
    end Ls;
 
 
-   procedure Pwd is
-      procedure Afficher_Chemin (D : P_Dossier) is
-      begin
-         if D.all.Dossier_Parent = null then
-            Put ("/");
-            Put ("Dossier actuel : /");
-         else
-            Afficher_Chemin (D.all.Dossier_Parent);
-            Put (To_String(D.all.Nom));
-            Put ("/");
-         end if;
-      exception
-      when Constraint_Error =>
-      raise Uninitialized_SGF;
-      end Afficher_Chemin;
-   begin
-      Afficher_Chemin (Actuel);
-   end Pwd;
-
-
       procedure Touch (Fi: out T_Fichier; Taille : in integer; Nom : in String; Droits : in Integer) is
          Li_cont : P_Liste_Contenu;
          N_Slot : T_Slot;
@@ -108,6 +88,24 @@ package body SGF is
       end Touch;
 
 
+procedure Pwd is
+   procedure Afficher_Chemin (D : P_Dossier) is
+   begin
+      if D.all.Dossier_Parent = null then
+         Put ("Dossier actuel : /");
+      else
+         Afficher_Chemin (D.all.Dossier_Parent);
+         Put (To_String(D.all.Nom));
+         Put ("/");
+      end if;
+   exception
+   when Constraint_Error =>
+   raise Uninitialized_SGF;
+   end Afficher_Chemin;
+begin
+   Afficher_Chemin (Actuel);
+   New_Line;
+end Pwd;
 
 
    procedure Mkdir (Chemin : in String; Nom : in String; Droits : in Integer; Parent : in P_Dossier) is
@@ -205,170 +203,170 @@ package body SGF is
       null;
    end Ls;
 
-function Recherche_chemin(Chemin : in String) return P_Liste_Contenu is
+   function Recherche_chemin(Chemin : in String) return P_Liste_Contenu is
 
-   procedure Chemin_Affichage(Chemin : in String) is
-      liste_chemin : Liste_U_String := Split(Chemin, '/');
+      -- Procedure d'affichage pour debug
+      procedure Chemin_Affichage(Chemin : in String) is
+         liste_chemin : Liste_U_String := Split(Chemin, '/');
+      begin
+         Put ("Affichage du chemin : ");
+         for i in liste_chemin'Range loop
+            Put ("/");
+            Put (i);
+            Put (To_String(liste_chemin(i)));
+         end loop;
+         New_Line;
+      end Chemin_Affichage;
+
+
+      function Chemin_Existe(Chemin : in String) return Boolean is
+         liste_chemin : Liste_U_String := Split(Chemin, '/');
+         conten : P_Liste_Contenu := Racine.Contenu;
+         ptr : P_Liste_Contenu;
+      begin
+         for i in liste_chemin'Range loop
+            ptr := null;
+            while conten /= null loop
+               if (not conten.all.Est_Fichier) 
+               and then (To_String(conten.all.Dossier.all.Nom) = To_String(liste_chemin(i)))
+               then
+                  ptr := conten;
+               end if;
+               conten := conten.all.Suivant;
+            end loop;
+            if ptr = null and i > 1 then
+               return False;
+            end if;
+            if ptr = null and i = 1 then
+               null;
+            else
+               conten := ptr.all.Dossier.all.Contenu;
+            end if;
+         end loop;
+         return True;
+      end Chemin_Existe;
+
+      function Chemin_Ptr(Chemin : in String) return P_Liste_Contenu is
+         liste_chemin : Liste_U_String := Split(Chemin, '/');
+         conten : P_Liste_Contenu := Racine.Contenu;
+         ptr : P_Liste_Contenu;
+      begin
+         for i in liste_chemin'Range loop
+            ptr := null;
+            while conten /= null loop
+               if (not conten.all.Est_Fichier) 
+               and then (To_String(conten.all.Dossier.all.Nom) = To_String(liste_chemin(i)))
+               then
+                  ptr := conten;
+               end if;
+               conten := conten.all.Suivant;
+            end loop;
+            if ptr = null and i = 1 then
+               null;
+            else
+               conten := ptr.all.Dossier.all.Contenu;
+            end if;
+         end loop;
+         return ptr;
+      end Chemin_Ptr;
+
    begin
-      Put ("Affichage du chemin : ");
-      for i in liste_chemin'Range loop
-         Put ("/");
-         Put (i);
-         Put (To_String(liste_chemin(i)));
+      -- Décommenter ci-dessous pour debug
+      -- Chemin_Affichage(Chemin);
+
+      if Chemin_Existe(Chemin) then -- Verifie l'existence du chemin absolu renseigné
+         return Chemin_Ptr(Chemin); -- Retourne le P_Liste_Contenu dudit chemin
+      else
+         return null;
+      end if;
+   end Recherche_chemin;
+
+   procedure Lsr is
+      conten2 : P_Liste_Contenu;
+      procedure Ls_rec(Dos : in P_Liste_Contenu) is
+         conten : P_Liste_Contenu;
+      begin
+         conten := Dos;
+         while conten /= null loop
+            if conten.all.Est_Fichier = True then
+               Put (To_String(conten.all.Fichier.all.Nom));
+               Put (conten.all.Fichier.all.Taille);
+               Put (conten.all.Fichier.all.Droits);
+               New_Line;
+            else
+               Put (To_String(conten.all.Dossier.all.Nom));
+               Put (conten.all.Dossier.all.Droits);
+               New_Line;
+               Ls_rec (conten.all.Dossier.all.Contenu);
+            end if;
+            conten := conten.all.Suivant;
+         end loop;
+      end Ls_rec;
+
+   begin
+      Act : P_Liste_Contenu := Actuel.all.Contenu; -- Actuel de type P_Liste_Contenu
+      Put ("Nom   ");
+      Put ("Taille   ");
+      Put_Line ("Droits");
+      conten2 := Actuel.all.Contenu;
+      while conten2 /= null loop
+         if conten2.all.Est_Fichier = True then
+            Put (To_String(conten2.all.Fichier.all.Nom));
+            Put (conten2.all.Fichier.all.Taille);
+            Put (conten2.all.Fichier.all.Droits);
+            New_Line;
+         else
+            Put (To_String(conten2.all.Dossier.all.Nom));
+            Put (conten2.all.Dossier.all.Droits);
+            New_Line;
+            Ls_rec (conten2.all.Dossier.all.Contenu);
+         end if;
+         conten2 := conten2.all.Suivant;
       end loop;
       New_Line;
-   end Chemin_Affichage;
-   
-
-   function Chemin_Existe(Chemin : in String) return Boolean is
-      liste_chemin : Liste_U_String := Split(Chemin, '/');
-      conten : P_Liste_Contenu := Racine.Contenu;
-      ptr : P_Liste_Contenu;
-   begin
-      for i in liste_chemin'Range loop
-         ptr := null;
-         while conten /= null loop
-            Put (To_String(conten.all.Dossier.all.Nom));
-            if (not conten.all.Est_Fichier) 
-            and then (To_String(conten.all.Dossier.all.Nom) = To_String(liste_chemin(i)))
-            then
-               ptr := conten;
-            end if;
-            conten := conten.all.Suivant;
-         end loop;
-         if ptr = null and i > 1 then
-            return False;
-         end if;
-         if ptr = null and i = 1 then
-            null;
-         else
-            conten := ptr.all.Dossier.all.Contenu;
-         end if;
-      end loop;
-      return True;
-   end Chemin_Existe;
-
-   function Chemin_Ptr(Chemin : in String) return P_Liste_Contenu is
-      liste_chemin : Liste_U_String := Split(Chemin, '/');
-      conten : P_Liste_Contenu := Racine.Contenu;
-      ptr : P_Liste_Contenu;
-   begin
-      for i in liste_chemin'Range loop
-         ptr := null;
-         while conten /= null loop
-            if (not conten.all.Est_Fichier) 
-            and then (To_String(conten.all.Dossier.all.Nom) = To_String(liste_chemin(i)))
-            then
-               ptr := conten;
-            end if;
-            conten := conten.all.Suivant;
-         end loop;
-         if ptr = null and i = 1 then
-            null;
-         else
-            conten := ptr.all.Dossier.all.Contenu;
-         end if;
-      end loop;
-      return ptr;
-   end Chemin_Ptr;
-
-begin
-
-   Chemin_Affichage(Chemin);
-
-   if Chemin_Existe(Chemin) then -- Verifie l'existence du chemin absolu renseigné
-      return Chemin_Ptr(Chemin); -- Retourne le P_Liste_Contenu dudit chemin
-   else
-      return null;
-   end if;
-end Recherche_chemin;
-
-procedure Lsr is
-   conten2 : P_Liste_Contenu;
-   procedure Ls_rec(Dos : in P_Liste_Contenu) is
-      conten : P_Liste_Contenu;
-   begin
-      conten := Dos;
-      while conten /= null loop
-         if conten.all.Est_Fichier = True then
-            Put (To_String(conten.all.Fichier.all.Nom));
-            Put (conten.all.Fichier.all.Taille);
-            Put (conten.all.Fichier.all.Droits);
-            New_Line;
-         else
-            Put (To_String(conten.all.Dossier.all.Nom));
-            Put (conten.all.Dossier.all.Droits);
-            New_Line;
-            Ls_rec (conten.all.Dossier.all.Contenu);
-         end if;
-         conten := conten.all.Suivant;
-      end loop;
-   end Ls_rec;
-
-begin
-   Act : P_Liste_Contenu := Actuel.all.Contenu; -- Actuel de type P_Liste_Contenu
-   Put ("Nom   ");
-   Put ("Taille   ");
-   Put_Line ("Droits");
-   conten2 := Actuel.all.Contenu;
-   while conten2 /= null loop
-      if conten2.all.Est_Fichier = True then
-         Put (To_String(conten2.all.Fichier.all.Nom));
-         Put (conten2.all.Fichier.all.Taille);
-         Put (conten2.all.Fichier.all.Droits);
-         New_Line;
-      else
-         Put (To_String(conten2.all.Dossier.all.Nom));
-         Put (conten2.all.Dossier.all.Droits);
-         New_Line;
-         Ls_rec (conten2.all.Dossier.all.Contenu);
-      end if;
-      conten2 := conten2.all.Suivant;
-   end loop;
-   New_Line;
-end Lsr;
+   end Lsr;
 
    procedure Lsr (Chemin : in String) is
 
-   ptr_chemin : P_Liste_Contenu;
+      ptr_chemin : P_Liste_Contenu;
 
-   procedure Ls_rec(Dos : in P_Liste_Contenu) is
-      conten : P_Liste_Contenu;
+      procedure Ls_rec(Dos : in P_Liste_Contenu) is
+         conten : P_Liste_Contenu;
+      begin
+         conten := Dos;
+            Put ("Nom   ");
+            Put ("Taille   ");
+            Put_Line ("Droits");
+         while conten /= null loop
+            if conten.all.Est_Fichier = True then
+               Put (To_String(conten.all.Fichier.all.Nom));
+               Put (conten.all.Fichier.all.Taille);
+               Put (conten.all.Fichier.all.Droits);
+               New_Line;
+            else
+               Put (To_String(conten.all.Dossier.all.Nom));
+               Put (conten.all.Dossier.all.Droits);
+               New_Line;
+               Ls_rec (conten.all.Dossier.all.Contenu);
+            end if;
+            conten := conten.all.Suivant;
+         end loop;
+      end Ls_rec;
+      
    begin
-      conten := Dos;
-         Put ("Nom   ");
-         Put ("Taille   ");
-         Put_Line ("Droits");
-      while conten /= null loop
-         if conten.all.Est_Fichier = True then
-            Put (To_String(conten.all.Fichier.all.Nom));
-            Put (conten.all.Fichier.all.Taille);
-            Put (conten.all.Fichier.all.Droits);
-            New_Line;
-         else
-            Put (To_String(conten.all.Dossier.all.Nom));
-            Put (conten.all.Dossier.all.Droits);
-            New_Line;
-            Ls_rec (conten.all.Dossier.all.Contenu);
-         end if;
-         conten := conten.all.Suivant;
-      end loop;
-   end Ls_rec;
-   
-begin
 
-   -- 1. retrouver le P_Liste_Contenu à partir de la liste extraite
-   ptr_chemin := Recherche_chemin(Chemin);
-   if ptr_chemin = null then
-      Put_Line ("Lsr(Chemin) : Chemin invalide");
-   else
-      -- 2. passer le P_Liste_Contenu en paramètre de Ls_rec
-      Ls_rec(ptr_chemin);
-   end if;
+      -- 1. retrouver le P_Liste_Contenu à partir de la liste extraite
+      ptr_chemin := Recherche_chemin(Chemin);
+      if ptr_chemin = null then
+         Put_Line ("Lsr(Chemin) : Chemin invalide");
+      else
+         -- 2. passer le P_Liste_Contenu en paramètre de Ls_rec
+         Ls_rec(ptr_chemin);
+      end if;
 
-   New_Line;
+      New_Line;
 
-end Lsr;
+   end Lsr;
 
    procedure Rm (Chemin : String) is
       Liste    : Liste_U_String := Split(Chemin, '/');
