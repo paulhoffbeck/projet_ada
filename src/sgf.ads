@@ -1,4 +1,7 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
+--CONTRATS A VERIFIER
+
 package SGF is
 
    type Liste_U_String is array (Positive range <>) of Unbounded_String;

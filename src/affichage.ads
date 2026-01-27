@@ -1,4 +1,8 @@
 package Affichage is
+
+--CONTRATS A FAIRE
+
+
    procedure Afficher_Banniere_Main;
    procedure Afficher_Banniere_Menu;
    procedure Menu;
