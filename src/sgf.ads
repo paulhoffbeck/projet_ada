@@ -70,6 +70,8 @@ package SGF is
    
    procedure Tar;
 
+   function Recherche_chemin(Chemin : in String) return P_Liste_Contenu;
+
    -- Changement du répertoire courant
    procedure Cd (Cur : in out P_Dossier ; Repertoire : in String);
    -- pre  : Dossier initialisé

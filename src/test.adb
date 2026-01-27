@@ -31,6 +31,7 @@ begin
       Mkdir("/home/user1", "user1", 111, Actuel);
       Mkdir("/home/n7", "n7", 111, Actuel);
       Mkdir("/home/user2", "user2", 111, Actuel);
+      --Touch("fichier1", 30, "Fichier1", 111);
       Lsr;
       Cd(Actuel, "..");
       Pwd;
