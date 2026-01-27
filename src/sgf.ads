@@ -17,6 +17,7 @@ package SGF is
       Nom    : Unbounded_String;
       Taille : Integer;
       Droits : Integer := 2#000#; -- Droits : read, write, exec 
+      Id: Integer;
    end record;
 
    type T_Liste_Contenu;
@@ -34,6 +35,7 @@ package SGF is
       Droits        : Integer := 2#000#;
       Dossier_Parent : P_Dossier;
       Contenu       : P_Liste_Contenu;
+      Id : Integer;
    end record;
 
    Actuel : aliased P_Dossier;

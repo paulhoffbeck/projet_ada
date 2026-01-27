@@ -53,6 +53,10 @@ package body Affichage_cmd is
       else if Commande = "tar" or Commande = "TAR" or Commande = "Tar" then
          Tar;
 
+      else if Commande = "rm" or Commande = "RM" or Commande = "Rm" then
+         Cmd_Faire_Rm(Liste_param, Nb_El);
+
+
       else if Commande ="" then
          null;
       
@@ -60,6 +64,7 @@ package body Affichage_cmd is
       else
          Put_Line("Commande inconnue");
 
+      end if;
       end if;
       end if;
       end if;
@@ -80,6 +85,9 @@ package body Affichage_cmd is
 
          when Incorect_Argument_Number => 
             Put_Line("Nombre d'argument incorecte !");
+
+         when No_Remaining_Place =>
+            Put_Line("Plus de place disponible, veuillez supprimer un fichier ou créer un fichier plus petit");
    end Trouver_Commande;
 
    procedure Cmd_Faire_Mkdir(Liste_param : Liste_U_String ; Nb_El : Integer) is
@@ -204,5 +212,16 @@ package body Affichage_cmd is
             raise Incorect_Argument_Number;
       end case;
    end Cmd_Faire_Cp;
+
+   procedure Cmd_Faire_Rm(Liste_param : Liste_U_String ; Nb_El : Integer)is
+      Target : string := To_String(Liste_param(2));
+   begin
+      Case Nb_El is
+         when 2 =>
+            Rm(Target);
+         when others =>
+            raise Incorect_Argument_Number;
+         end case;
+   end Cmd_Faire_Rm;
 
 end Affichage_cmd;

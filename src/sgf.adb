@@ -74,9 +74,11 @@ end Pwd;
       if not Check_Restant (Taille) then
          raise No_Remaining_Place;
       end if;
+      Creation (N_Slot, Taille);
       Fi.Nom := To_Unbounded_String(Nom);
       Fi.Taille := Taille;
       Fi.Droits := Droits;
+      Fi.Id := N_Slot.address;
 
       Li_cont := new T_Liste_Contenu;
       Li_cont.Est_Fichier := True;
@@ -96,7 +98,7 @@ end Pwd;
             C.all.Suivant := Li_cont;
          end;
       end if;
-      Creation (N_Slot, Taille);
+
       exception
       when Constraint_Error =>
       raise Uninitialized_SGF;
@@ -125,11 +127,13 @@ begin
    if not Check_Restant (Taille) then
       raise No_Remaining_Place;
    end if;
+   Creation (N_Slot, Taille);
    Cd(Dossier_Acuel, Chemin);
    Nouveau_Dossier.Nom := To_Unbounded_String(Nom);
    Nouveau_Dossier.Droits := Droits;
    Nouveau_Dossier.Dossier_Parent := Dossier_Acuel;
    Nouveau_Dossier.Contenu := null;
+   Nouveau_Dossier.Id := N_Slot.address;
    P_Nouveau_Dossier := new T_Dossier'(Nouveau_Dossier);
    P_Liste_Contenu_Nouveau := new T_Liste_Contenu'(
       Est_Fichier => False,
@@ -146,7 +150,7 @@ begin
       end loop;
       Dernier.all.Suivant := P_Liste_Contenu_Nouveau;
    end if;
-   Creation (N_Slot, Taille);
+
 end Mkdir;
 
 
@@ -380,6 +384,7 @@ end Lsr;
       Cible    : Unbounded_String;
       Precedent : P_Liste_Contenu;
       Parcours : P_Liste_Contenu;
+      Id : Integer;
    begin
       if Courant = null then
          raise Uninitialized_SGF;
@@ -391,12 +396,15 @@ end Lsr;
             return;
          end if;
       end loop;
+
       Cible := Liste(Liste'Last);
       Precedent := null;
       Parcours  := Courant.Contenu;
 
       while Parcours /= null loop
          if Parcours.Est_Fichier and then To_String(Parcours.Fichier.Nom) = To_String(Cible) then
+            Id := Parcours.Fichier.all.Id;
+            Destruction (Id);
             if Precedent = null then
                Courant.Contenu := Parcours.Suivant;
             else
@@ -409,6 +417,8 @@ end Lsr;
          Precedent := Parcours;
          Parcours  := Parcours.Suivant;
       end loop;
+
+
    end Rm;
 
    procedure Rmr (Dos : in out T_Dossier; Chemin : in String) is
