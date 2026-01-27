@@ -368,20 +368,6 @@ end Pwd;
 
    end Lsr;
 
-   procedure Rm (Chemin : String) is
-      Liste    : Liste_U_String := Split(Chemin, '/');
-      Courant  : P_Dossier := Actuel;
-      Cible    : Unbounded_String;
-      Precedent : P_Liste_Contenu;
-      Parcours : P_Liste_Contenu;
-   begin
-      -- 1. split le chemin donné en entrée
-      -- 2. retrouver le P_Liste_Contenu à partir de la liste extraite
-      -- 3. passer le P_Liste_Contenu en paramètre de Ls_rec
-      null;
-   end Lsr;
-
-
       procedure Rm (Chemin : String) is
          Liste    : Liste_U_String := Split(Chemin, '/');
          Courant  : P_Dossier := Actuel;
