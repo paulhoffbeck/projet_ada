@@ -50,7 +50,6 @@ procedure Pwd is
    procedure Afficher_Chemin (D : P_Dossier) is
    begin
       if D.all.Dossier_Parent = null then
-         Put ("/");
          Put ("Dossier actuel : /");
       else
          Afficher_Chemin (D.all.Dossier_Parent);
@@ -210,6 +209,7 @@ end Pwd;
 
    function Recherche_chemin(Chemin : in String) return P_Liste_Contenu is
 
+      -- Procedure d'affichage pour debug
       procedure Chemin_Affichage(Chemin : in String) is
          liste_chemin : Liste_U_String := Split(Chemin, '/');
       begin
@@ -231,7 +231,6 @@ end Pwd;
          for i in liste_chemin'Range loop
             ptr := null;
             while conten /= null loop
-               Put (To_String(conten.all.Dossier.all.Nom));
                if (not conten.all.Est_Fichier) 
                and then (To_String(conten.all.Dossier.all.Nom) = To_String(liste_chemin(i)))
                then
@@ -276,8 +275,8 @@ end Pwd;
       end Chemin_Ptr;
 
    begin
-
-      Chemin_Affichage(Chemin);
+      -- Décommenter ci-dessous pour debug
+      -- Chemin_Affichage(Chemin);
 
       if Chemin_Existe(Chemin) then -- Verifie l'existence du chemin absolu renseigné
          return Chemin_Ptr(Chemin); -- Retourne le P_Liste_Contenu dudit chemin
