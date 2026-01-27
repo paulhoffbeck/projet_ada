@@ -4,8 +4,6 @@ package SGF is
    type Liste_U_String is array (Positive range <>) of Unbounded_String;
 
 
-   type Indexeur is private;
-
    type T_Fichier;
    type T_Dossier;
 
@@ -70,6 +68,7 @@ package SGF is
    -- pre  : Dossier initialisé
    -- post : Ajoute un dossier vide
    
+   procedure Tar;
 
    -- Changement du répertoire courant
    procedure Cd (Cur : in out P_Dossier ; Repertoire : in String);
@@ -97,7 +96,7 @@ package SGF is
    -- post : Affiche récursivement tous les fichiers et sous-répertoires du dossier désigné
 
    -- Suppression d’un fichier
-   procedure Rm (Dos : in out T_Dossier; Index : in Indexeur);
+   procedure Rm(chemin : string);
    -- pre  : Index valide
    -- post : Fichier supprimé
    -- exception : Dossier inexistant
@@ -108,12 +107,12 @@ package SGF is
    -- post : Dossier et sous-dossiers supprimés
 
    -- Déplacement ou renommage d’un fichier
-   procedure Mv (Dos : in out T_Dossier; Dest : in String; Nom : in String);
+   procedure Mv (Dos : in out T_Dossier; Fichier : in String; Dest : in String; Nom : in String);
    -- pre  : Dossier initialisé
    -- post : Fichier déplacé ou renommé
 
-   -- Copie récursive d’un fichier ou dossier
-   procedure Cpr (Dos : in T_Dossier; Element : in String; Destination : in String);
+   -- Copie d’un fichier ou dossier
+   procedure Cp (Dos : in T_Dossier; Fichier : in String; Destination : in String ; Nouveau_nom : in string);
    -- pre  : Dossier initialisé, élément existant
    -- post : Copie effectuée
 
@@ -124,7 +123,6 @@ package SGF is
    function Trouver_El_R (Fichier : Boolean; Dossier: P_Dossier;Nom: String; Precedent : P_Dossier) return P_Dossier;
    function Trouver_Fi(nom : string ; Dossier : P_Dossier) return P_Fichier;
    function Trouver_Dos(nom : string ; Dossier : P_Dossier) return P_Dossier;
-private
-   type Indexeur is new Integer;
+
 end SGF;
 
