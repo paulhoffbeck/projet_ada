@@ -219,7 +219,9 @@ package body Affichage is
    Src : string(1..200);
    begin
    Skip_Line;
+   begin
    Tar;
+   end;
    Put_Line("Dossier courant archivé");
    end Faire_Tar;
 

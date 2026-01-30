@@ -131,7 +131,7 @@ end Afficher_Aide;
       end if;
       exception 
          when Constraint_Error =>
-            Put_Line("Mauvais arguments !");
+            Put_Line("Arguments incorrectes !");
 
          when Uninitialized_SGF =>
             Put_Line("SGF non initialisé :( ");

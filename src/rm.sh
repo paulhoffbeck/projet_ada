@@ -9,4 +9,6 @@ rm sgf.ali
 rm sgf.o
 rm disque.o
 rm disque.ali
-
+rm test.o
+rm test.ali
+rm test
