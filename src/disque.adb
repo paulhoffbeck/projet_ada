@@ -12,12 +12,18 @@ package body Disque is
    procedure Free is new Ada.Unchecked_Deallocation(T_Slot, P_Slot);
 
    procedure Creation(slot : out T_Slot ; taille : in Integer) is --procédure permettant de créer un slot de mémoire lors de la création d'un élément
+   
+   --vérifie la taille restante
    place : Boolean := Check_Restant (taille);
    begin
+      -- si il reste de la place on initialise le slot et on l'ajoute à la liste chainée avec la méthode ajouter_slot
       if place then
          slot.address := compteur;
          slot.taille := taille;
          Ajouter_Slot (slot);
+
+
+         -- on enlève la taille du fichier du disque afin de ne pas le surcharger
          disque_restant := disque_restant - Long_Integer(taille);
          compteur := compteur + 1;
       else
@@ -28,6 +34,7 @@ package body Disque is
    procedure Ajouter_Slot(slot : in T_Slot) is -- procédure permettant d'ajouter un slot à la liste des slots quand celui-ci est utilisé
    Actuel : P_Slot := emplacement_origin;
    begin
+      -- on parcours toute la chaine jusqu'à la fin et on ajoute à la fin un pointeur vers notre nouveau Slot
       while Actuel.all.suivant /= null loop
          Actuel := Actuel.all.suivant;
       end loop;
@@ -35,20 +42,31 @@ package body Disque is
    end Ajouter_Slot;
 
    procedure Destruction(id : in Integer) is --procédure permetttant de détruire et déréférencer le slot 
+      
+      -- nous convertissons en quelque sort l'id en P_Slot afin de pouvoir en faire quelque chose
       Cible     : P_Slot := Trouver_Slot(id);
+
+
       Actuel    : P_Slot := emplacement_origin;
       Suivant   : P_Slot;
    begin
+
+      -- en cas de faux id
       if Cible = null then
          return;
       end if;
 
+      --nous rendons l'espace occupé par le slot
       disque_restant := disque_restant + Long_Integer(Cible.all.taille);
+
+      -- si la cible est directement détectée nous la détruisons (afin de simuler au maximum nous utilisons Free qui libère littéralement l'espace occupé par une variable.)
       if Actuel.all.suivant = Cible then
          Actuel.all.suivant := Cible.all.suivant;
          Free(Cible);
          return;
       end if;
+
+      --Nous parcourons toute la liste pour détecter la cible
       while Actuel.all.suivant /= null loop
          Suivant := Actuel.all.suivant;
          if Suivant = Cible then
@@ -65,6 +83,7 @@ package body Disque is
       Difference : Integer;
       Cible : P_Slot :=Trouver_Slot(id);
    begin
+   --rien d'original
       if Cible = null then
          return;
       end if;
@@ -83,6 +102,7 @@ package body Disque is
    function Trouver_Slot(id : in integer) return P_Slot is --fonction permetttant de trouver un slot
       Actuel : P_Slot := emplacement_origin.all.suivant;
    begin
+      --rien d'original
       while Actuel /= null loop
          if Actuel.all.address = id then
             return Actuel;

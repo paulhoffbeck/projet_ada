@@ -10,6 +10,7 @@ package body Affichage_cmd is
 
 
 procedure Afficher_Aide is
+-- affiche une bannière d'aide
 begin
    Put_Line("+-------------------------------------------------------------+");
    Put_Line("|                       AIDE DU SGF                           |");
@@ -54,6 +55,8 @@ end Afficher_Aide;
 
       end loop;
       exception 
+         -- cette exception est spéciale car elle exploite les propriétés de l'excpetions :
+         -- cela stop tous les programmes jusqu'à remonter à la méthode principale pour la stopper proprement
          when Sortie =>
          return;
    end Cmd;
@@ -64,6 +67,9 @@ end Afficher_Aide;
       Commande : String := To_String(Liste_param(1));
       Nb_El : Integer := Liste_param'Length;
    begin
+
+      -- nous comparons les arguments entrés par l'utilisateur avec un certain nombre de mots jusqu'à tomber sur le juste
+      -- si ça match alors nous lançons la procédure adéquat
       if Commande = "init" or Commande = "INIT" or Commande = "Init" then
          Init_SGF;
       else if Commande = "mkdir" or Commande = "MKDIR" or Commande = "Mkdir" then
@@ -142,6 +148,13 @@ end Afficher_Aide;
          when No_Remaining_Place =>
             Put_Line("Plus de place disponible, veuillez supprimer un fichier ou créer un fichier plus petit");
    end Trouver_Commande;
+
+
+
+
+   -- Toutes les méthodes ont le même principe : 
+   -- on convertis les paramètres de la liste et on regarde si le nombre d'arguments est OK
+   -- Si c'est le cas on lance la procédure SGF sinon on renvoit une exception
 
    procedure Cmd_Faire_Mkdir(Liste_param : Liste_U_String ; Nb_El : Integer) is --procédure permettant l'exécution de mkdir avec les paramètres mis en entrée
       Str : string := To_String(Liste_param(2));
@@ -317,6 +330,11 @@ end Afficher_Aide;
 
 
 
+
+
+-- procédure importante
+-- équivalent du module cowsay sur debian.
+-- cowsay <message>
 
    procedure Fonction_importante(Message : in String) is
    Max_Len : constant Integer := 40;

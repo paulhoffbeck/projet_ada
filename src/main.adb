@@ -9,6 +9,8 @@ with Disque; use Disque;
 procedure Main is
 choix : Integer;
 begin
+
+      --détecte les choix de l'utilisateur et démare les bonnes procédures selon les choix
    while True loop
       Afficher_Banniere_Main;
       begin

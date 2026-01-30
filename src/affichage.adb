@@ -7,6 +7,112 @@ with Affichage_cmd; use Affichage_cmd;
 with Disque; use Disque;
 
 package body Affichage is
+
+   procedure Menu is --procédure principale affichant la bannière puis dispachant selon le choix de l'utilisateur dans les bonnes méthodes
+   choix :integer;
+   begin
+
+
+
+
+   -- Nous comparons constament les entrées de l'utilisateur
+   -- si celles ci sont valides nous lançons les bonnes méthodes
+   while True loop
+      begin
+      Afficher_Banniere_Menu;
+      Get(choix);
+      case choix is
+         when 1 =>
+            Faire_Init;
+         when 2 =>
+            Faire_Dossier;
+         when 3 =>
+            Faire_Touch;
+         when 4 =>
+            Faire_Cd;
+         when 5 =>
+            Ls;
+            New_Line;
+         when 6 =>
+            Pwd;
+            New_Line;
+         when 7 =>
+            Put_Line("Nombre d'octets restants :" & Long_Integer'Image(disque_restant) & " octets");
+         when 8 =>
+            Faire_Trouver_El;
+         when 9 =>
+            Faire_Supprimer;
+         when 10 => 
+            Faire_Copie;
+         when 11 =>
+            Faire_Mv;
+         when 12 =>
+            Faire_Tar;
+         when 13=>
+            Faux_Main;
+         when others =>
+            raise Bad_Choice_Number;
+      end case;
+      exception
+
+         -- c'est ici que les exceptions sont gérées pour ne pas casser la boucle et ne pas faire d'erreur en boucle
+         when Bad_Choice_Number =>
+            Put("Mauvais choix de nombre !");
+            New_Line;
+            Skip_Line;
+         when Data_error =>
+               Put("Veillez entrer un nombre !");
+               Skip_Line;
+               New_Line;
+         when Constraint_Error =>
+         Put_Line("Mauvais arguments !");
+
+         when Uninitialized_SGF =>
+         Put_Line("SGF non initialisé :( ");
+
+         when Incorect_Argument_Number => 
+         Put_Line("Nombre d'argument incorecte !");
+      end;
+      end loop;
+
+   exception
+   when Sortie =>
+   return;
+   end Menu;
+
+   procedure Faux_Main is --procédure jouant le role de la méthode main si l'utilisateur choisis de revenir au choix des modes SGF (menu ou sgf)
+   Src : string(1..200);
+   choix : Integer;
+   begin
+
+   -- copie du vrai main
+   while True loop
+      begin
+         Afficher_Banniere_Main;
+         Get(choix);
+         case choix is 
+            when 1 =>
+               Menu;
+               exit;
+            when 2 =>
+               Cmd;
+               exit;
+            when 3 =>
+               raise Sortie;
+            when others =>
+               raise Bad_Choice_Number;
+         end case;
+         
+         exception
+            when Bad_Choice_Number =>
+               Put("Mauvais choix de nombre !");
+            when Data_error =>
+               Put("Veillez entrer un nombre !");
+      end;
+   end loop;
+   end Faux_Main;
+
+
    procedure Afficher_Banniere_Main is --procédure permettant l'affichage de la bannière main
    begin
       Put_Line ("+-----------------------------------------------+");
@@ -42,6 +148,27 @@ package body Affichage is
       Put_Line ("|   Entrez votre choix (1-13)                   |");
       Put_Line ("+-----------------------------------------------+");
    end Afficher_Banniere_Menu;
+
+   function Choix_Fi(nom : string)return Boolean is --fonction vérifiant si l'élément entré est un fichier ou non
+   Fi : Boolean := False;
+
+   -- ce programme parcours toute la chaine. Si il trouve un point c'est un fichier sinon c'est un dossier
+   -- procédure améliorable
+   point : Character := '.';
+   begin
+   for J of nom loop
+      if J = point then
+         Fi := True;
+         return Fi;
+      end if;
+   end loop;
+   return Fi;
+   end Choix_Fi;
+
+
+
+   -- Les procédures suivantes suivent le même principe : 
+   --Elles demandes les paramètres qui leurs sont utiles puis lance la méthode
 
    procedure Faire_Init is --procédure permettant d'initialiser le SGF
    begin
@@ -103,18 +230,7 @@ package body Affichage is
       Cd(Actuel,Chemin(1..LongChemin));
    end Faire_Cd;
 
-   function Choix_Fi(nom : string)return Boolean is --fonction vérifiant si l'élément entré est un fichier ou non
-   Fi : Boolean := False;
-   point : Character := '.';
-   begin
-   for J of nom loop
-      if J = point then
-         Fi := True;
-         return Fi;
-      end if;
-   end loop;
-   return Fi;
-   end Choix_Fi;
+
 
    procedure Faire_Trouver_El is --fichier affichant les caractéristiques d'un élément si il est trouvé
       est_fichier : Boolean;
@@ -225,99 +341,6 @@ package body Affichage is
    Put_Line("Dossier courant archivé");
    end Faire_Tar;
 
-   procedure Faux_Main is --procédure jouant le role de la méthode main si l'utilisateur choisis de revenir au choix des modes SGF (menu ou sgf)
-   Src : string(1..200);
-   choix : Integer;
-   begin
-   while True loop
-      begin
-         Afficher_Banniere_Main;
-         Get(choix);
-         case choix is 
-            when 1 =>
-               Menu;
-               exit;
-            when 2 =>
-               Cmd;
-               exit;
-            when 3 =>
-               raise Sortie;
-            when others =>
-               raise Bad_Choice_Number;
-         end case;
-         
-         exception
-            when Bad_Choice_Number =>
-               Put("Mauvais choix de nombre !");
-            when Data_error =>
-               Put("Veillez entrer un nombre !");
-      end;
-   end loop;
-   end Faux_Main;
-
-   procedure Menu is --procédure principale affichant la bannière puis dispachant selon le choix de l'utilisateur dans les bonnes méthodes
-   choix :integer;
-   begin
-   while True loop
-      begin
-      Afficher_Banniere_Menu;
-      Get(choix);
-      case choix is
-         when 1 =>
-            Faire_Init;
-         when 2 =>
-            Faire_Dossier;
-         when 3 =>
-            Faire_Touch;
-         when 4 =>
-            Faire_Cd;
-         when 5 =>
-            Ls;
-            New_Line;
-         when 6 =>
-            Pwd;
-            New_Line;
-         when 7 =>
-            Put_Line("Nombre d'octets restants :" & Long_Integer'Image(disque_restant) & " octets");
-         when 8 =>
-            Faire_Trouver_El;
-         when 9 =>
-            Faire_Supprimer;
-         when 10 => 
-            Faire_Copie;
-         when 11 =>
-            Faire_Mv;
-         when 12 =>
-            Faire_Tar;
-         when 13=>
-            Faux_Main;
-         when others =>
-            raise Bad_Choice_Number;
-      end case;
-      exception
-         when Bad_Choice_Number =>
-            Put("Mauvais choix de nombre !");
-            New_Line;
-            Skip_Line;
-         when Data_error =>
-               Put("Veillez entrer un nombre !");
-               Skip_Line;
-               New_Line;
-         when Constraint_Error =>
-         Put_Line("Mauvais arguments !");
-
-         when Uninitialized_SGF =>
-         Put_Line("SGF non initialisé :( ");
-
-         when Incorect_Argument_Number => 
-         Put_Line("Nombre d'argument incorecte !");
-      end;
-      end loop;
-
-   exception
-   when Sortie =>
-   return;
-   end Menu;
-
+  
    
 end Affichage;

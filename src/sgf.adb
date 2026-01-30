@@ -8,13 +8,16 @@ with Affichage_cmd; use Affichage_cmd;
 with Disque; use Disque;
 package body SGF is   
 
-procedure Init_SGF is --Initialise le dossier racine (trop de commentaires)
+procedure Init_SGF is --Initialise le dossier racine
 begin
+   --La racine est une variable globale qui sert de centre à tous les programmes
+   -- Nous initialisons tous ses paramètres
    Racine.Nom := To_Unbounded_String("/");
    Racine.Droits := 2#111#; -- read, write, exec
    Racine.Dossier_Parent := null;
    Racine.Contenu := null;
    Actuel := Racine'Access;
+   --Nous décrémentons aussi la variable globale disque car celle-ci ne doit jamais être dépassée
    disque_restant := disque_restant- 10;
 end Init_SGF;
 
@@ -73,27 +76,34 @@ end Pwd;
       -- procédure permettant la création d'un fichier avec des propriétés spécifiques données en paramètre d'entrée
       Li_cont : P_Liste_Contenu;
       N_Slot : T_Slot;
+      C : P_Liste_Contenu := Actuel.all.Contenu;
    begin
+      --Nous recherchons si il reste de l'espace sinon nous intérompons la procédure
       if not Check_Restant (Taille) then
          raise No_Remaining_Place;
       end if;
+
+      --nous créons un slot dans le disque afin que la taille du fichier soit prise en compte
       Creation (N_Slot, Taille);
+
+      --Nous initialisons aussi le fichier
       Fi.Nom := To_Unbounded_String(Nom);
       Fi.Taille := Taille;
       Fi.Droits := Droits;
       Fi.Id := N_Slot.address;
 
+      --Ainsi que la liste de contenu qui viendra s'ajouter à la liste chainée de contenue du dossier hébergeant le fichier
       Li_cont := new T_Liste_Contenu;
       Li_cont.Est_Fichier := True;
       Li_cont.Fichier := new T_Fichier'(Fi);
       Li_cont.Dossier := null;
       Li_cont.Suivant := null;
       begin
+      --Nous plaçon la nouvelle liste de contenue soit au début si le contenue est vide soit à la fin de la liste chainée
       if Actuel.all.Contenu = null then
          Actuel.all.Contenu := Li_cont;
       else
-         declare
-            C : P_Liste_Contenu := Actuel.all.Contenu;
+             C := Actuel.all.Contenu;
          begin
             while C.all.Suivant /= null loop
                C := C.all.Suivant;
@@ -103,6 +113,7 @@ end Pwd;
       end if;
 
       exception
+      --Nous levons une excpetions si le dossier n'est pas initialisé
       when Constraint_Error =>
       raise Uninitialized_SGF;
       end;
@@ -119,23 +130,26 @@ procedure Mkdir (Chemin : in String; Nom : in String; Droits : in Integer; Paren
    Taille : integer :=10;
    N_Slot : T_Slot;
 begin
+--Nous recherchons si il reste de l'espace sinon nous intérompons la procédure
    if not Check_Restant (Taille) then
       raise No_Remaining_Place;
    end if;
+   --nous créons un slot dans le disque afin que la taille du fichier soit prise en compte
    Creation (N_Slot, Taille);
-   Cd(Dossier_Acuel, Chemin);
+   Cd(Dossier_Acuel, Chemin); -- nous nous déplaçons avec une copie du répertoire actuel afin de créer le dossier dans la destination. Cela a été fait car une fonction cd a été faite
+   
+   --initialisation du nouveau dossier et ce qui va avec (pointeur vers lui et vers sont contenue)
    Nouveau_Dossier.Nom := To_Unbounded_String(Nom);
    Nouveau_Dossier.Droits := Droits;
    Nouveau_Dossier.Dossier_Parent := Dossier_Acuel;
    Nouveau_Dossier.Contenu := null;
    Nouveau_Dossier.Id := N_Slot.address;
    P_Nouveau_Dossier := new T_Dossier'(Nouveau_Dossier);
-   P_Liste_Contenu_Nouveau := new T_Liste_Contenu'(
-      Est_Fichier => False,
-      Fichier     => null,
-      Dossier     => P_Nouveau_Dossier,
-      Suivant     => null
-   );
+   P_Liste_Contenu_Nouveau := new T_Liste_Contenu'(Est_Fichier => False,Fichier     => null,Dossier     => P_Nouveau_Dossier,Suivant     => null);
+   
+   
+   --Nous plaçon la nouvelle liste de contenue soit au début si le contenue est vide soit à la fin de la liste chainée
+   --possibilité de remplaçement avec une procédure commune avec touch
    if Dossier_Acuel.all.Contenu = null then
       Dossier_Acuel.all.Contenu := P_Liste_Contenu_Nouveau;
    else
@@ -152,25 +166,38 @@ end Mkdir;
 
    procedure Cd (Cur : in out P_Dossier; Repertoire : in String) is
    --procédure permettant de changer de répertoire courant (variable globale actuelle)
+
+   --nous découpons le chemin par rapport aux /
+   --Cette fonction split a été conçus pour renvoyer un " " si le chemin commence par "/"
+   --cela détecte les chemins absolus
    Liste_Chemin : Liste_U_String := Split(Repertoire,'/');
    Elem : P_Liste_Contenu;
    begin
+
+
+   --Nous parcourons la liste d'argument saucissonnée
    for i in Liste_Chemin'Range loop
       declare
          Nom_Segment : constant String := To_String(Liste_Chemin(i));
+         --la déclaration arrive maitenant car nous ne connaissons pas à l'avance la taille du segment et qu'un unbounded string n'était pas compatible
       begin
+
+         --si la liste commence par " " alors on se met directement à la racine (chemin absolu)
          if Nom_Segment = " " then
             Cur := Racine'Access;
 
+         --Si c'est le répertoire actuel on ne fait rien
          elsif Nom_Segment = "." then
             null;
 
+         --on remonte d'un cran
          elsif Nom_Segment = ".." then
             if Cur.all.Dossier_Parent /= null then
                Cur := Cur.all.Dossier_Parent;
             end if;
 
          else
+            --sinon on cherche le dossier cible dans le contenue du dossier actuel
             begin
             Elem := Cur.all.Contenu;
             exception
@@ -376,6 +403,9 @@ end Ls;
 
 
       procedure Rm (Chemin : String) is -- supprime un fichier à partir d'un chemin donné en paramètre
+         
+         
+         --on découpe la liste en différents caractères
          Liste    : Liste_U_String := Split(Chemin, '/');
          Courant  : P_Dossier := Actuel;
          Cible    : Unbounded_String;
@@ -383,18 +413,24 @@ end Ls;
          Parcours : P_Liste_Contenu;
          Id:Integer;
       begin
+         --on vérifie que le chemin soit valide et on stop sinon
+         --peut être remplacé par une exception
          if Courant = null then
             Put_Line("Dossier inexistant");
             return;
          end if;
 
+      --la cible est le dernier argument du chemin
       Cible := Liste(Liste'Last);
       Precedent := null;
       Parcours  := Courant.Contenu;
 
+   -- on parcours le contenue jusqu'a le trouver
       while Parcours /= null loop
          if Parcours.Est_Fichier and then To_String(Parcours.Fichier.Nom) = To_String(Cible) then
             Id := Parcours.Fichier.all.Id;
+
+            --on procède à la libération de la mémoire
             Destruction (Id);
             if Precedent = null then
                Courant.Contenu := Parcours.Suivant;
@@ -415,6 +451,8 @@ end Ls;
    procedure Mv (Dos : in out T_Dossier; Fichier : in string; Dest : in String; Nom : in String) is
    Copie_Actuel : P_Dossier := Actuel;
    begin
+
+      --on copie le fichier à la destination puis on le supprime dans le répertoire actuel
       Cp(Dos,Fichier, Dest,Nom);
       Actuel := Copie_Actuel;
       Rm (Fichier);
@@ -428,20 +466,30 @@ end Ls;
    Copie_Actuel : P_Dossier := Actuel;
    Fi : T_Fichier;
    begin
+
+   --"rien" est un charactère que la méthode Trouver_Fi renvoit quand le nom n'est pas renseignée
    if Nouveau_nom /= "rien" then
    Copie_Fichier.Nom := To_Unbounded_String(Nouveau_nom);
    end if;
+
+
+   -- on va au répertoire de destination et on créé un fichier
    Cd(Actuel,Destination);
    Touch(Fi,Copie_Fichier.Taille,To_String(Copie_Fichier.Nom),Copie_Fichier.Droits);
    end Cp;
 
    function Split(chemin : String ; symbole : Character) return Liste_U_String is
+   --Cette fonction coupe une chaine de caractère selon un charactère donnée
+   -- si cette chaine commence par le charactère, la liste commencera par " ". Cela aide
+   --a reconnaitre les chemins absolu
          Compteur : Integer := 1;
          index    : Integer := 1;
          start    : Integer := 1;
          partie   : Unbounded_String := To_Unbounded_String("");
          Lst_U_vide : Liste_U_String(1..1);
       begin
+
+         -- on compte la taille de la future liste car on ne peut pas déclarer une liste de taille inconnue
          if chemin = "" then
          Lst_U_vide(1) := To_Unbounded_String("");
          return Lst_U_vide;
@@ -453,14 +501,18 @@ end Ls;
          end loop;
 
          declare
+         -- on déclare la liste finale avec la bonne taille
             Result : Liste_U_String(1..Compteur);
          begin
+
+         --on traite la petite particularité
             if chemin(1) = symbole then
                Result(index) := To_Unbounded_String(" ");
                index := index + 1;
                start := start + 1;
             end if;
 
+         -- on ajoute à la liste les charactères au fur et à mesure
             for i in start..chemin'Length loop
                if chemin(i) = symbole then
                   Result(index) := partie;
@@ -478,15 +530,22 @@ end Ls;
 function Trouver_Fi(nom : string ; Dossier : P_Dossier) return P_Fichier is
 -- fonction permettant de retourner un fichier grâce à un paramètre donné
    est_fichier : Boolean := True;
+
+
+
+   -- cela nous renvoit la position du dossier contenant le fichier
    Contenant : P_Dossier := Trouver_El_R(est_fichier, Dossier, nom, Actuel);
    Contenue_du_contenant : P_Liste_Contenu;
 begin
+
+   -- si la fonction Trouver_El_R n'a rien trouvé on retourne rien aussi
    if Contenant = null then
       return null;
    end if;
 
    Contenue_du_contenant := Contenant.all.contenu;
 
+   -- on parcours le contenue du dossier jusqu'à trouver le fichier
    while Contenue_du_contenant /= null loop
       if Contenue_du_contenant.all.Est_Fichier
         and then To_String(Contenue_du_contenant.all.Fichier.all.Nom) = Nom then
@@ -507,6 +566,9 @@ procedure Tar is
          Courant : P_Liste_Contenu := Dos.all.Contenu;
          Taille : Integer := 10;
       begin
+
+
+      -- on parcours tous les dossier en additionnant la taille à chaque fois
          while Courant /= null loop
             if Courant.all.Est_Fichier then
                Taille := Taille + Courant.all.Fichier.all.Taille;
@@ -529,6 +591,7 @@ procedure Tar is
 
 function Trouver_Dos(nom : string ; Dossier : P_Dossier) return P_Dossier is
 --fonction permettant de retourner un dossier
+-- même principe que Trouver_Fi mais pour les dossiers
    est_fichier : Boolean := False;
    Contenant : P_Dossier := Trouver_El_R(est_fichier, Dossier, nom, Actuel);
    Contenue_du_contenant : P_Liste_Contenu;
@@ -554,7 +617,13 @@ function Trouver_El_R (Fichier : Boolean; Dossier : P_Dossier;Nom     : String; 
 --fonction qui retourne un pointeur vers le dossier qui contient l'élément (équivalement d'un "précédent")
 Actuel : P_Liste_Contenu := Dossier.all.Contenu;
 begin
+
+   -- on parcours tout le répertoire actuel
    while Actuel /= null loop
+
+
+
+      --On fait une correlation des conditions avec les fichiers
       if Actuel.all.Est_Fichier then
          if Fichier then
 
