@@ -1,7 +1,6 @@
 with SGF; use SGF;
 package Affichage_cmd is
 
---CONTRATS A FAIRE
 
 procedure Cmd;
 -- pre  : aucune

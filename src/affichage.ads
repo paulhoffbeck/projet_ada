@@ -1,7 +1,5 @@
 package Affichage is
 
---CONTRATS A FAIRE
-
 
 procedure Afficher_Banniere_Main;
 -- pre  : aucune
