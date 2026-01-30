@@ -22,6 +22,7 @@ begin
 end Init_SGF;
 
 procedure Ls is
+   -- affiche le contenu du répertoire actuel
    conten : P_Liste_Contenu;
 begin
    begin
@@ -50,6 +51,7 @@ end Ls;
 
 
 procedure Pwd is
+   -- affiche le répertoire actuel ("working directory")
    procedure Afficher_Chemin (D : P_Dossier) is
    begin
       if D.all.Dossier_Parent = null then
@@ -218,7 +220,7 @@ end Mkdir;
 end Cd;
 
 procedure Ls (Chemin : in String) is
-
+   -- affiche le contenu du dossier renseigné
    procedure Ls_chemin(Dos : in P_Liste_Contenu) is
    begin
       null;
@@ -229,7 +231,8 @@ begin
 end Ls;
 
    function Recherche_chemin(Chemin : in String) return P_Liste_Contenu is
-
+   -- renvoie le point P_Liste_Contenu qui correspond à un chemin
+   -- (utile notamment pour la récursivité dans certaines fonctions)
       -- Procedure d'affichage pour debug
       procedure Chemin_Affichage(Chemin : in String) is
          liste_chemin : Liste_U_String := Split(Chemin, '/');
@@ -245,6 +248,7 @@ end Ls;
 
 
       function Chemin_Existe(Chemin : in String) return Boolean is
+      -- pour un chemin donné, indique s'il existe bel et bien
          liste_chemin : Liste_U_String := Split(Chemin, '/');
          conten : P_Liste_Contenu := Racine.Contenu;
          ptr : P_Liste_Contenu;
@@ -272,6 +276,7 @@ end Ls;
       end Chemin_Existe;
 
       function Chemin_Ptr(Chemin : in String) return P_Liste_Contenu is
+      -- pour un chemin donné, renvoie le pointeur vers le T_Liste_Contenu correspondant
          liste_chemin : Liste_U_String := Split(Chemin, '/');
          conten : P_Liste_Contenu := Racine.Contenu;
          ptr : P_Liste_Contenu;
@@ -307,6 +312,7 @@ end Ls;
    end Recherche_chemin;
 
    procedure Lsr is
+   -- affichage récursif des dossiers et sous-dossiers du répertoire actuel
       conten2 : P_Liste_Contenu;
             Act : P_Liste_Contenu := Actuel.all.Contenu; -- Actuel de type P_Liste_Contenu
       procedure Ls_rec(Dos : in P_Liste_Contenu) is
@@ -353,7 +359,7 @@ end Ls;
    end Lsr;
 
    procedure Lsr (Chemin : in String) is
-
+   -- affichage récursif du contenu des dossiers et sous-dossiers du répertoire en entrée
       ptr_chemin : P_Liste_Contenu;
 
       procedure Ls_rec(Dos : in P_Liste_Contenu) is

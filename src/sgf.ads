@@ -65,7 +65,10 @@ package SGF is
    
    procedure Tar;
 
+   -- Pour un chemin donné, renvoie le pointeur vers un T_Liste_Contenu correspondant
    function Recherche_chemin(Chemin : in String) return P_Liste_Contenu;
+   -- pre : Dossier initialisé et existant
+   -- post : P_Liste_Contenu renvoyé
 
    -- Changement du répertoire courant
    procedure Cd (Cur : in out P_Dossier ; Repertoire : in String);
