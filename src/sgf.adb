@@ -292,6 +292,7 @@ end Ls;
 
    procedure Lsr is
       conten2 : P_Liste_Contenu;
+            Act : P_Liste_Contenu := Actuel.all.Contenu; -- Actuel de type P_Liste_Contenu
       procedure Ls_rec(Dos : in P_Liste_Contenu) is
          conten : P_Liste_Contenu;
       begin
@@ -310,12 +311,10 @@ end Ls;
             end if;
             conten := conten.all.Suivant;
          end loop;
-      end Lsr;
+      end Ls_rec;
 
-   procedure Ls_rec(Dos : in P_Liste_Contenu) is
-      conten : P_Liste_Contenu;
    begin
-      Act : P_Liste_Contenu := Actuel.all.Contenu; -- Actuel de type P_Liste_Contenu
+
       Put ("Nom   ");
       Put ("Taille   ");
       Put_Line ("Droits");
@@ -335,9 +334,9 @@ end Ls;
          conten2 := conten2.all.Suivant;
       end loop;
       New_Line;
-     end Ls_rec;
+   end Lsr;
 
-procedure Lsr (Chemin : in String) is
+   procedure Lsr (Chemin : in String) is
 
       ptr_chemin : P_Liste_Contenu;
 
@@ -379,18 +378,20 @@ procedure Lsr (Chemin : in String) is
 
    end Lsr;
 
+
+
       procedure Rm (Chemin : String) is
          Liste    : Liste_U_String := Split(Chemin, '/');
          Courant  : P_Dossier := Actuel;
          Cible    : Unbounded_String;
          Precedent : P_Liste_Contenu;
          Parcours : P_Liste_Contenu;
+         Id:Integer;
       begin
          if Courant = null then
             Put_Line("Dossier inexistant");
             return;
          end if;
-      end loop;
 
       Cible := Liste(Liste'Last);
       Precedent := null;
