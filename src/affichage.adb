@@ -7,7 +7,7 @@ with Affichage_cmd; use Affichage_cmd;
 with Disque; use Disque;
 
 package body Affichage is
-   procedure Afficher_Banniere_Main is
+   procedure Afficher_Banniere_Main is --procédure permettant l'affichage de la bannière main
    begin
       Put_Line ("+-----------------------------------------------+");
       Put_Line ("|           Bienvenue dans le SGF               |");
@@ -20,12 +20,36 @@ package body Affichage is
       Put_Line ("+-----------------------------------------------+");
    end Afficher_Banniere_Main;
 
-   procedure Faire_Init is
+      procedure Afficher_Banniere_Menu is --procédure permettant l'affichage de la bannière menu
+   begin
+      Put_Line ("+-----------------------------------------------+");
+      Put_Line ("|      Bienvenue dans le SGF mode menu          |");
+      Put_Line ("|-----------------------------------------------|");
+      Put_Line ("|   1. Initialiser le SGF                       |");
+      Put_Line ("|   2. Créer un dossier (mkdir)                 |");
+      Put_Line ("|   3. Créer un fichier (touch)                 |");
+      Put_Line ("|   4. Changer de répertoire (cd)               |");
+      Put_Line ("|   5. Afficher le répertoire (ls)              |");
+      Put_Line ("|   6. Afficher le chemin (pwd)                 |");
+      Put_Line ("|   7. Modifier la taille                       |");
+      Put_Line ("|   8. Afficher l'espace restant sur le disque  |");
+      Put_Line ("|   9. Trouver un élément                       |");
+      Put_Line ("|   10. Supprimer un élément                    |");
+      Put_Line ("|   11. Copier un élément                       |");
+      Put_Line ("|   12. Deplacer un élément                     |");
+      Put_Line ("|   13. Archiver le répertoire courant          |");
+      Put_Line ("|   14. Revenir au chois de mode                |");
+      Put_Line ("|                                               |");
+      Put_Line ("|   Entrez votre choix (1-13)                   |");
+      Put_Line ("+-----------------------------------------------+");
+   end Afficher_Banniere_Menu;
+
+   procedure Faire_Init is --procédure permettant d'initialiser le SGF
    begin
       Init_SGF;
    end Faire_Init;
 
-   procedure Faire_Dossier is
+   procedure Faire_Dossier is --procédure permettant de créer un dossier en demandant les paramètres nécessaires
    Nom     : String (1..100);
    Chemin  : String (1..200);
    LongNom : Natural;
@@ -43,7 +67,7 @@ package body Affichage is
       Mkdir(Chemin(1..LongChemin), Nom(1..LongNom), Droits, Actuel);
    end Faire_Dossier;
 
-   procedure Faire_Touch is
+   procedure Faire_Touch is --procédure permettant de créer un fichier en demandant les paramètres nécessaires
    Nom     : String (1..100);
    Chemin  : String (1..200);
    LongNom : Natural;
@@ -70,7 +94,7 @@ package body Affichage is
       null;
    end Faire_Modif_Taille;
 
-   procedure Faire_Cd is
+   procedure Faire_Cd is --procédure permettant de changer de répertoire courant en demandant les paramètres nécessaires
    Chemin  : String (1..200);
    LongChemin : Natural;
    begin
@@ -80,7 +104,7 @@ package body Affichage is
       Cd(Actuel,Chemin(1..LongChemin));
    end Faire_Cd;
 
-   function Choix_Fi(nom : string)return Boolean is
+   function Choix_Fi(nom : string)return Boolean is --fonction vérifiant si l'élément entré est un fichier ou non
    Fi : Boolean := False;
    point : Character := '.';
    begin
@@ -93,7 +117,7 @@ package body Affichage is
    return Fi;
    end Choix_Fi;
 
-   procedure Faire_Trouver_El is
+   procedure Faire_Trouver_El is --fichier affichant les caractéristiques d'un élément si il est trouvé
       est_fichier : Boolean;
       nom : String (1 .. 200);
       L_nom : Natural;
@@ -109,7 +133,6 @@ package body Affichage is
       if est_fichier then
          Fichier := Trouver_Fi(nom(1 .. L_nom), Racine'Access);
          if Fichier /= null then
-            Put_Line("=== Fichier trouvé ===");
             Put_Line("Nom    : " & To_String(Fichier.all.Nom));
             Put_Line("Taille : " & Integer'Image(Fichier.all.Taille));
             Put_Line("Droits : " & Integer'Image(Fichier.all.Droits));
@@ -121,7 +144,6 @@ package body Affichage is
          Dossier := Trouver_Dos(nom(1 .. L_nom), Racine'Access);
 
          if Dossier /= null then
-            Put_Line("=== Dossier trouvé ===");
             Put_Line("Nom    : " & To_String(Dossier.all.Nom));
             Put_Line("Droits : " & Integer'Image(Dossier.all.Droits));
             if Dossier.all.Dossier_Parent /= null then
@@ -135,7 +157,7 @@ package body Affichage is
       end if;
    end Faire_Trouver_El;
 
-   procedure Faire_Supprimer is
+   procedure Faire_Supprimer is --procédure supprimant un élément en demandant les paramètres
    nom : String (1 .. 200);
    L_nom : Natural;
    begin
@@ -145,7 +167,7 @@ package body Affichage is
    Rm(nom(1..L_nom));
    end Faire_Supprimer;
 
-   procedure Faire_Copie is
+   procedure Faire_Copie is --procédure permettant de copier un fichier en demandant les paramètres nécessaires
    Src : string(1..200);
    L_Src : Natural;
 
@@ -171,7 +193,7 @@ package body Affichage is
 
 
 
-   procedure Faire_Mv is
+   procedure Faire_Mv is  --procédure permettant de bouger un fichier en demandant les paramètres nécessaires
    Src : string(1..200);
    L_Src : Natural;
 
@@ -194,14 +216,16 @@ package body Affichage is
    Mv(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
    end Faire_Mv;
 
-   procedure Faire_Tar is
+   procedure Faire_Tar is --procédure permettant de archiver un fichier en demandant les paramètres nécessaires
+   Src : string(1..200);
    begin
    Skip_Line;
    Tar;
    Put_Line("Dossier courant archivé");
    end Faire_Tar;
 
-   procedure Faux_Main is
+   procedure Faux_Main is --procédure jouant le role de la méthode main si l'utilisateur choisis de revenir au choix des modes SGF (menu ou sgf)
+   Src : string(1..200);
    choix : Integer;
    begin
    while True loop
@@ -230,31 +254,7 @@ package body Affichage is
    end loop;
    end Faux_Main;
 
-   procedure Afficher_Banniere_Menu is
-   begin
-      Put_Line ("+-----------------------------------------------+");
-      Put_Line ("|      Bienvenue dans le SGF mode menu          |");
-      Put_Line ("|-----------------------------------------------|");
-      Put_Line ("|   1. Initialiser le SGF                       |");
-      Put_Line ("|   2. Créer un dossier (mkdir)                 |");
-      Put_Line ("|   3. Créer un fichier (touch)                 |");
-      Put_Line ("|   4. Changer de répertoire (cd)               |");
-      Put_Line ("|   5. Afficher le répertoire (ls)              |");
-      Put_Line ("|   6. Afficher le chemin (pwd)                 |");
-      Put_Line ("|   7. Modifier la taille                       |");
-      Put_Line ("|   8. Afficher l'espace restant sur le disque  |");
-      Put_Line ("|   9. Trouver un élément                       |");
-      Put_Line ("|   10. Supprimer un élément                    |");
-      Put_Line ("|   11. Copier un élément                       |");
-      Put_Line ("|   12. Deplacer un élément                     |");
-      Put_Line ("|   13. Archiver le répertoire courant          |");
-      Put_Line ("|   14. Revenir au chois de mode                |");
-      Put_Line ("|                                               |");
-      Put_Line ("|   Entrez votre choix (1-13)                   |");
-      Put_Line ("+-----------------------------------------------+");
-   end Afficher_Banniere_Menu;
-
-   procedure Menu is
+   procedure Menu is --procédure principale affichant la bannière puis dispachant selon le choix de l'utilisateur dans les bonnes méthodes
    choix :integer;
    begin
    while True loop

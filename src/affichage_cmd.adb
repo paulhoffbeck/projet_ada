@@ -7,7 +7,9 @@ with Affichage; use Affichage;
 with Affichage_cmd; use Affichage_cmd;
 with Disque; use Disque;
 package body Affichage_cmd is
-   procedure Cmd is
+
+
+   procedure Cmd is --Procédure gérant le cmd.
       Commande  : String (1..200);
       LongCommande : Natural;
    begin
@@ -19,8 +21,8 @@ package body Affichage_cmd is
       end loop;
    end Cmd;
 
-   procedure Trouver_Commande(Commandes : in String) is
-      Liste_param : Liste_U_String := Split(Commandes, ' ');
+   procedure Trouver_Commande(Commandes : in String) is --Procédure redirigeant des paramètres entrés en commande vers les bonnes méthodes
+      Liste_param : Liste_U_String := Split(Commandes, ' '); -- la commande est d'abord découpée avant d'être analysée bout à bout
       Taille : integer := Liste_param'Length;
       Commande : String := To_String(Liste_param(1));
       Nb_El : Integer := Liste_param'Length;
@@ -53,6 +55,10 @@ package body Affichage_cmd is
       else if Commande = "tar" or Commande = "TAR" or Commande = "Tar" then
          Tar;
 
+      else if Commande = "rm" or Commande = "RM" or Commande = "Rm" then
+         Cmd_Faire_Rm(Liste_param, Nb_El);
+
+
       else if Commande ="" then
          null;
       
@@ -60,6 +66,7 @@ package body Affichage_cmd is
       else
          Put_Line("Commande inconnue");
 
+      end if;
       end if;
       end if;
       end if;
@@ -80,9 +87,12 @@ package body Affichage_cmd is
 
          when Incorect_Argument_Number => 
             Put_Line("Nombre d'argument incorecte !");
+
+         when No_Remaining_Place =>
+            Put_Line("Plus de place disponible, veuillez supprimer un fichier ou créer un fichier plus petit");
    end Trouver_Commande;
 
-   procedure Cmd_Faire_Mkdir(Liste_param : Liste_U_String ; Nb_El : Integer) is
+   procedure Cmd_Faire_Mkdir(Liste_param : Liste_U_String ; Nb_El : Integer) is --procédure permettant l'exécution de mkdir avec les paramètres mis en entrée
       Str : string := To_String(Liste_param(2));
       Str2 : string := To_String(Liste_param(3));
       Str3 : string := To_String(Liste_param(4));
@@ -96,7 +106,7 @@ package body Affichage_cmd is
       end case;
    end Cmd_Faire_Mkdir;
 
-   procedure Cmd_Faire_Touch(Liste_param : Liste_U_String ; Nb_El : Integer) is
+   procedure Cmd_Faire_Touch(Liste_param : Liste_U_String ; Nb_El : Integer) is --procédure permettant l'exécution de touch avec les paramètres mis en entrée
       Fi : T_Fichier;
       Str : string := To_String(Liste_param(2));
       Str2 : string := To_String(Liste_param(3));
@@ -113,13 +123,13 @@ package body Affichage_cmd is
       end case;
    end Cmd_Faire_Touch;
 
-   procedure Cmd_Faire_Cd(Liste_param : Liste_U_String ; Nb_El : Integer) is
+   procedure Cmd_Faire_Cd(Liste_param : Liste_U_String ; Nb_El : Integer) is   --procédure permettant l'exécution de Cd avec les paramètres mis en entrée
       Str : string := To_String(Liste_param(2));
    begin
       Cd(Actuel,Str);
    end Cmd_Faire_Cd;
 
-   procedure Cmd_Faire_Ls(Liste_param : Liste_U_String ; Nb_El : Integer) is
+   procedure Cmd_Faire_Ls(Liste_param : Liste_U_String ; Nb_El : Integer) is --procédure permettant l'exécution de ls avec les paramètres mis en entrée
    begin
       case Nb_El is
          when 1 =>
@@ -130,7 +140,7 @@ package body Affichage_cmd is
       end case;
    end Cmd_Faire_Ls;
 
-   procedure Cmd_Faire_Pwd(Liste_param : Liste_U_String ; Nb_El : Integer) is
+   procedure Cmd_Faire_Pwd(Liste_param : Liste_U_String ; Nb_El : Integer) is    --procédure permettant l'exécution de pwd avec les paramètres mis en entrée
       begin
          case Nb_El is
             when 1 =>
@@ -141,7 +151,7 @@ package body Affichage_cmd is
          end case;
       end Cmd_Faire_Pwd;
 
-   procedure Cmd_Faire_Find(Liste_param : Liste_U_String ; Nb_El : Integer) is
+   procedure Cmd_Faire_Find(Liste_param : Liste_U_String ; Nb_El : Integer) is    --procédure permettant l'exécution de find avec les paramètres mis en entrée
       Str : String := To_String(Liste_param(2));
       Choix : Boolean := Choix_Fi(Str);
       Fichier : P_Fichier := null;
@@ -152,7 +162,6 @@ package body Affichage_cmd is
             if Choix then
                Fichier := Trouver_Fi(Str,Actuel);
                if Fichier /= null then
-                  Put_Line("=== Fichier trouvé ===");
                   Put_Line("Nom    : " & To_String(Fichier.all.Nom));
                   Put_Line("Taille : " & Integer'Image(Fichier.all.Taille));
                   Put_Line("Droits : " & Integer'Image(Fichier.all.Droits));
@@ -162,7 +171,6 @@ package body Affichage_cmd is
             else
                Dossier := Trouver_Dos(Str,Actuel);
                if Dossier /= null then
-                  Put_Line("=== Dossier trouvé ===");
                   Put_Line("Nom    : " & To_String(Dossier.all.Nom));
                   Put_Line("Droits : " & Integer'Image(Dossier.all.Droits));
                   if Dossier.all.Dossier_Parent /= null then
@@ -179,7 +187,7 @@ package body Affichage_cmd is
    end case;
    end Cmd_Faire_Find;
 
-   procedure Cmd_Faire_Mv(Liste_param : Liste_U_String ; Nb_El : Integer) is
+   procedure Cmd_Faire_Mv(Liste_param : Liste_U_String ; Nb_El : Integer) is     --procédure permettant l'exécution de mv avec les paramètres mis en entrée
       Src : string := To_String(Liste_param(2));
       Dst : string := To_String(Liste_param(3));
       Nn : string := To_String(Liste_param(4));
@@ -192,7 +200,7 @@ package body Affichage_cmd is
       end case;
    end Cmd_Faire_Mv;
 
-   procedure Cmd_Faire_Cp(Liste_param : Liste_U_String ; Nb_El : Integer) is
+   procedure Cmd_Faire_Cp(Liste_param : Liste_U_String ; Nb_El : Integer) is    --procédure permettant l'exécution de cp avec les paramètres mis en entrée
       Src : string := To_String(Liste_param(2));
       Dst : string := To_String(Liste_param(3));
       Nn : string := To_String(Liste_param(4));
@@ -204,5 +212,16 @@ package body Affichage_cmd is
             raise Incorect_Argument_Number;
       end case;
    end Cmd_Faire_Cp;
+
+   procedure Cmd_Faire_Rm(Liste_param : Liste_U_String ; Nb_El : Integer)is    --procédure permettant l'exécution de rm avec les paramètres mis en entrée
+      Target : string := To_String(Liste_param(2));
+   begin
+      Case Nb_El is
+         when 2 =>
+            Rm(Target);
+         when others =>
+            raise Incorect_Argument_Number;
+         end case;
+   end Cmd_Faire_Rm;
 
 end Affichage_cmd;
