@@ -20,6 +20,30 @@ package body Affichage is
       Put_Line ("+-----------------------------------------------+");
    end Afficher_Banniere_Main;
 
+      procedure Afficher_Banniere_Menu is
+   begin
+      Put_Line ("+-----------------------------------------------+");
+      Put_Line ("|      Bienvenue dans le SGF mode menu          |");
+      Put_Line ("|-----------------------------------------------|");
+      Put_Line ("|   1. Initialiser le SGF                       |");
+      Put_Line ("|   2. Créer un dossier (mkdir)                 |");
+      Put_Line ("|   3. Créer un fichier (touch)                 |");
+      Put_Line ("|   4. Changer de répertoire (cd)               |");
+      Put_Line ("|   5. Afficher le répertoire (ls)              |");
+      Put_Line ("|   6. Afficher le chemin (pwd)                 |");
+      Put_Line ("|   7. Modifier la taille                       |");
+      Put_Line ("|   8. Afficher l'espace restant sur le disque  |");
+      Put_Line ("|   9. Trouver un élément                       |");
+      Put_Line ("|   10. Supprimer un élément                    |");
+      Put_Line ("|   11. Copier un élément                       |");
+      Put_Line ("|   12. Deplacer un élément                     |");
+      Put_Line ("|   13. Archiver le répertoire courant          |");
+      Put_Line ("|   14. Revenir au chois de mode                |");
+      Put_Line ("|                                               |");
+      Put_Line ("|   Entrez votre choix (1-13)                   |");
+      Put_Line ("+-----------------------------------------------+");
+   end Afficher_Banniere_Menu;
+
    procedure Faire_Init is
    begin
       Init_SGF;
@@ -229,30 +253,6 @@ package body Affichage is
       end;
    end loop;
    end Faux_Main;
-
-   procedure Afficher_Banniere_Menu is
-   begin
-      Put_Line ("+-----------------------------------------------+");
-      Put_Line ("|      Bienvenue dans le SGF mode menu          |");
-      Put_Line ("|-----------------------------------------------|");
-      Put_Line ("|   1. Initialiser le SGF                       |");
-      Put_Line ("|   2. Créer un dossier (mkdir)                 |");
-      Put_Line ("|   3. Créer un fichier (touch)                 |");
-      Put_Line ("|   4. Changer de répertoire (cd)               |");
-      Put_Line ("|   5. Afficher le répertoire (ls)              |");
-      Put_Line ("|   6. Afficher le chemin (pwd)                 |");
-      Put_Line ("|   7. Modifier la taille                       |");
-      Put_Line ("|   8. Afficher l'espace restant sur le disque  |");
-      Put_Line ("|   9. Trouver un élément                       |");
-      Put_Line ("|   10. Supprimer un élément                    |");
-      Put_Line ("|   11. Copier un élément                       |");
-      Put_Line ("|   12. Deplacer un élément                     |");
-      Put_Line ("|   13. Archiver le répertoire courant          |");
-      Put_Line ("|   14. Revenir au chois de mode                |");
-      Put_Line ("|                                               |");
-      Put_Line ("|   Entrez votre choix (1-13)                   |");
-      Put_Line ("+-----------------------------------------------+");
-   end Afficher_Banniere_Menu;
 
    procedure Menu is
    choix :integer;
