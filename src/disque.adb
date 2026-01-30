@@ -63,6 +63,7 @@ package body Disque is
    procedure Modif(id : in Integer; nouvelle_taille : in Integer) is  --procédure permetttant de modifier un slot
       Ancienne : Integer;
       Difference : Integer;
+      Cible : P_Slot :=Trouver_Slot(id);
    begin
       if Cible = null then
          return;
