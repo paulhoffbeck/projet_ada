@@ -8,14 +8,14 @@ with Affichage_cmd; use Affichage_cmd;
 with Disque; use Disque;
 package body SGF is   
 
-procedure Init_SGF is --Initialise le dossier racine
+procedure Init_SGF is --Initialise le dossier racine (trop de commentaires)
 begin
-   Racine.Nom := To_Unbounded_String("/"); --U_String pour avoir des noms dynamiques
+   Racine.Nom := To_Unbounded_String("/");
    Racine.Droits := 2#111#; -- read, write, exec
-   Racine.Dossier_Parent := null; --La racine n'a par définition pas de parent
-   Racine.Contenu := null; --Initialisation par défaut
-   Actuel := Racine'Access; --Initialisation de la variable globale access
-   disque_restant := disque_restant- 10; --On enlève la place prise par la racine (10 octets)
+   Racine.Dossier_Parent := null;
+   Racine.Contenu := null;
+   Actuel := Racine'Access;
+   disque_restant := disque_restant- 10;
 end Init_SGF;
 
 procedure Ls is
@@ -67,7 +67,8 @@ begin
 end Pwd;
 
 
-   procedure Touch (Fi: out T_Fichier; Taille : in integer; Nom : in String; Droits : in Integer) is
+   procedure Touch (Fi: out T_Fichier; Taille : in integer; Nom : in String; Droits : in Integer) is 
+      -- procédure permettant la création d'un fichier avec des propriétés spécifiques données en paramètre d'entrée
       Li_cont : P_Liste_Contenu;
       N_Slot : T_Slot;
    begin
@@ -106,16 +107,8 @@ end Pwd;
    end Touch;
 
 
-   procedure Touch (Dos : in out T_Dossier; Fi : out T_Fichier;
-                    Nom : in String; Droits : in Integer) is
-   begin
-      null;
-   end Touch;
-
-
-
-
 procedure Mkdir (Chemin : in String; Nom : in String; Droits : in Integer; Parent : in P_Dossier) is
+   -- procédure permettant la création d'un dossier avec des propriétés spécifiques données en paramètre d'entrée
    Dossier_Acuel : P_Dossier := Actuel;
    Nouveau_Dossier : T_Dossier;
    P_Nouveau_Dossier : P_Dossier;
@@ -156,6 +149,7 @@ end Mkdir;
 
 
    procedure Cd (Cur : in out P_Dossier; Repertoire : in String) is
+   --procédure permettant de changer de répertoire courant (variable globale actuelle)
    Liste_Chemin : Liste_U_String := Split(Repertoire,'/');
    Elem : P_Liste_Contenu;
    begin
@@ -195,11 +189,6 @@ end Mkdir;
       end;
    end loop;
 end Cd;
-
-procedure Modif_Taille(Chemin : in  String; Taille : Integer ; Fichier : out T_Fichier) is
-begin
-Fichier.Taille := Taille;
-end Modif_Taille;
 
 procedure Ls (Chemin : in String) is
 
@@ -380,7 +369,7 @@ end Ls;
 
 
 
-      procedure Rm (Chemin : String) is
+      procedure Rm (Chemin : String) is -- supprime un fichier à partir d'un chemin donné en paramètre
          Liste    : Liste_U_String := Split(Chemin, '/');
          Courant  : P_Dossier := Actuel;
          Cible    : Unbounded_String;
@@ -417,12 +406,6 @@ end Ls;
 
    end Rm;
 
-   procedure Rmr (Dos : in out T_Dossier; Chemin : in String) is
-   begin
-      null;
-   end Rmr;
-
-
    procedure Mv (Dos : in out T_Dossier; Fichier : in string; Dest : in String; Nom : in String) is
    Copie_Actuel : P_Dossier := Actuel;
    begin
@@ -434,6 +417,7 @@ end Ls;
 
 
    procedure Cp (Dos : in T_Dossier; Fichier : in String; Destination : in String ; Nouveau_nom : in string) is
+   --copie un fichier à partir d'un nom de fichier vers une destination donnée en parmètre
    Copie_Fichier : T_Fichier := Trouver_Fi (Fichier, Actuel).all;
    Copie_Actuel : P_Dossier := Actuel;
    Fi : T_Fichier;
@@ -452,7 +436,6 @@ end Ls;
          partie   : Unbounded_String := To_Unbounded_String("");
          Lst_U_vide : Liste_U_String(1..1);
       begin
-         -- Count slashes to know the number of segments
          if chemin = "" then
          Lst_U_vide(1) := To_Unbounded_String("");
          return Lst_U_vide;
@@ -487,6 +470,7 @@ end Ls;
       end Split;
 
 function Trouver_Fi(nom : string ; Dossier : P_Dossier) return P_Fichier is
+-- fonction permettant de retourner un fichier grâce à un paramètre donné
    est_fichier : Boolean := True;
    Contenant : P_Dossier := Trouver_El_R(est_fichier, Dossier, nom, Actuel);
    Contenue_du_contenant : P_Liste_Contenu;
@@ -510,6 +494,7 @@ begin
 end Trouver_Fi;
 
 procedure Tar is
+--procédure permettant de simuler un archivage de répertoire
       Archive : T_Fichier;
       Taille_Totale : Integer;
       function Taille_Dossier (Dos : in P_Dossier) return Integer is
@@ -537,6 +522,7 @@ procedure Tar is
 
 
 function Trouver_Dos(nom : string ; Dossier : P_Dossier) return P_Dossier is
+--fonction permettant de retourner un dossier
    est_fichier : Boolean := False;
    Contenant : P_Dossier := Trouver_El_R(est_fichier, Dossier, nom, Actuel);
    Contenue_du_contenant : P_Liste_Contenu;
@@ -559,9 +545,9 @@ end Trouver_Dos;
 
 
 function Trouver_El_R (Fichier : Boolean; Dossier : P_Dossier;Nom     : String; Precedent : P_Dossier) return P_Dossier is
+--fonction qui retourne un pointeur vers le dossier qui contient l'élément (équivalement d'un "précédent")
 Actuel : P_Liste_Contenu := Dossier.all.Contenu;
 begin
-   Put(Boolean'Image(Fichier));  
    while Actuel /= null loop
       if Actuel.all.Est_Fichier then
          if Fichier then

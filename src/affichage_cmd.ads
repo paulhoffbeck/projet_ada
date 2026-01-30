@@ -46,7 +46,11 @@ procedure Cmd_Faire_Rm(Liste_param : Liste_U_String ; Nb_El : Integer);
 -- pre  : Nb_El = 2, chemin valide
 -- post : élément supprimé
 
+procedure Fonction_importante(Message : in String);
+--procedure la plus importante du projet
 
+procedure Faire_Fonctionimportante(Liste_param : Liste_U_String ; Nb_El : Integer);
+-- deuxième procedure la plus importante du projet
 
 Bad_Argument : exception;
 Incorect_Argument_Number : exception;

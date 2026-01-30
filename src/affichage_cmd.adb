@@ -9,6 +9,39 @@ with Disque; use Disque;
 package body Affichage_cmd is
 
 
+procedure Afficher_Aide is
+begin
+   Put_Line("+-------------------------------------------------------------+");
+   Put_Line("|                       AIDE DU SGF                           |");
+   Put_Line("|-------------------------------------------------------------|");
+   Put_Line("| Commandes disponibles :                                     |");
+   Put_Line("|                                                             |");
+   Put_Line("| init                            : Initialise le SGF         |");
+   Put_Line("| mkdir <chemin> <nom> <droits>  : Crée un dossier            |");
+   Put_Line("| touch <nom> <droits> <taille>  : Crée un fichier            |");
+   Put_Line("| cd <repertoire>                 : Change le répertoire      |");
+   Put_Line("| ls                              : Liste le contenu          |");
+   Put_Line("| ls <chemin>                     : Liste un chemin précis    |");
+   Put_Line("| lsr                             : Liste récursive contenu   |");
+   Put_Line("| lsr <chemin>                    : Liste récursive chemin    |");
+   Put_Line("| pwd                             : Affiche le chemin actuel  |");
+   Put_Line("| find <nom>                      : Recherche un fichier      |");
+   Put_Line("| cp <src> <dst> <nouveau_nom>   : Copie fichier/dossier      |");
+   Put_Line("| mv <src> <dst> <nouveau_nom>   : Déplace/renomme fichier    |");
+   Put_Line("| rm <nom>                        : Supprime fichier/dossier  |");
+   Put_Line("| tar                             : Archive répertoire courant|");
+   Put_Line("| help                            : Affiche cette aide        |");
+   Put_Line("| menu                            : Passer au mode menu       |");
+   Put_Line("| exit                            : Fermer le terminal        |");
+   Put_Line("|                                                             |");
+   Put_Line("|                                                             |");
+   Put_Line("| ! Important ! : Veuillez initialiser le SGF avant tout      |");
+   Put_Line("|                                                             |");
+   Put_Line("+-------------------------------------------------------------+");
+
+end Afficher_Aide;
+
+
    procedure Cmd is --Procédure gérant le cmd.
       Commande  : String (1..200);
       LongCommande : Natural;
@@ -18,7 +51,11 @@ package body Affichage_cmd is
          Put(">");
          Get_Line(Commande,LongCommande);
          Trouver_Commande(Commande(1..LongCommande));
+
       end loop;
+      exception 
+         when Sortie =>
+         return;
    end Cmd;
 
    procedure Trouver_Commande(Commandes : in String) is --Procédure redirigeant des paramètres entrés en commande vers les bonnes méthodes
@@ -58,6 +95,17 @@ package body Affichage_cmd is
       else if Commande = "rm" or Commande = "RM" or Commande = "Rm" then
          Cmd_Faire_Rm(Liste_param, Nb_El);
 
+      else if Commande = "help" or Commande = "HELP" or Commande = "Help" then
+         Afficher_Aide;
+      
+      else if Commande = "exit" or Commande = "EXIT" or Commande = "Exit" then
+         raise Sortie;
+      
+      else if Commande = "menu" or Commande = "MENU" or Commande = "Menu" then
+         Menu;
+
+      else if Commande = "cowsay" or Commande = "COWSAY" or Commande = "Cowsay" then
+         Faire_Fonctionimportante(Liste_param, Nb_El);
 
       else if Commande ="" then
          null;
@@ -65,7 +113,10 @@ package body Affichage_cmd is
 
       else
          Put_Line("Commande inconnue");
-
+      end if;
+      end if;
+      end if;
+      end if;
       end if;
       end if;
       end if;
@@ -80,7 +131,7 @@ package body Affichage_cmd is
       end if;
       exception 
          when Constraint_Error =>
-            Put_Line("Mauvais arguments !");
+            Put_Line("Arguments incorrectes !");
 
          when Uninitialized_SGF =>
             Put_Line("SGF non initialisé :( ");
@@ -223,5 +274,102 @@ package body Affichage_cmd is
             raise Incorect_Argument_Number;
          end case;
    end Cmd_Faire_Rm;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   procedure Fonction_importante(Message : in String) is
+   Max_Len : constant Integer := 40;
+   Line     : String(1..Max_Len);
+   Msg_Len  : Integer;
+   Start    : Integer := 1;
+   End_Pos  : Integer;
+   begin
+   loop
+      if Start > Message'Length then
+         exit;
+      end if;
+      End_Pos := Start + Max_Len - 1;
+      if End_Pos > Message'Length then
+         End_Pos := Message'Length;
+      end if;
+
+      Msg_Len := End_Pos - Start + 1;
+      Line(1..Msg_Len) := Message(Start..End_Pos);
+      if Start = 1 then
+         Put ("  ");
+         for I in 1..Msg_Len loop
+            Put ("-");
+         end loop;
+         New_Line;
+      end if;
+
+      Put ("< ");
+      Put (Line(1..Msg_Len));
+      Put_Line (" >");
+
+      if End_Pos = Message'Length then
+         Put ("  ");
+         for I in 1..Msg_Len loop
+            Put ("-");
+         end loop;
+         New_Line;
+      end if;
+
+      Start := End_Pos + 1;
+   end loop;
+   Put_Line("        \   ^__^");
+   Put_Line("         \  (oo)\_______");
+   Put_Line("            (__)\       )\/\");
+   Put_Line("                ||----w |");
+   Put_Line("                ||     ||");
+end Fonction_importante;
+
+procedure Faire_Fonctionimportante(Liste_param : Liste_U_String ; Nb_El : Integer) is
+      Src : string := To_String(Liste_param(2));
+   begin
+
+   Fonction_importante(Src);
+end Faire_Fonctionimportante;
 
 end Affichage_cmd;
