@@ -9,6 +9,34 @@ with Disque; use Disque;
 package body Affichage_cmd is
 
 
+procedure Afficher_Aide is
+begin
+   Put_Line("+-------------------------------------------------------------+");
+   Put_Line("|                       AIDE DU SGF                           |");
+   Put_Line("|-------------------------------------------------------------|");
+   Put_Line("| Commandes disponibles :                                     |");
+   Put_Line("|                                                             |");
+   Put_Line("| init                            : Initialise le SGF         |");
+   Put_Line("| mkdir <chemin> <nom> <droits>  : Crée un dossier            |");
+   Put_Line("| touch <nom> <droits> <taille>  : Crée un fichier            |");
+   Put_Line("| cd <repertoire>                 : Change le répertoire      |");
+   Put_Line("| ls                              : Liste le contenu          |");
+   Put_Line("| ls <chemin>                     : Liste un chemin précis    |");
+   Put_Line("| lsr                             : Liste récursive contenu   |");
+   Put_Line("| lsr <chemin>                    : Liste récursive chemin    |");
+   Put_Line("| pwd                             : Affiche le chemin actuel  |");
+   Put_Line("| find <nom>                      : Recherche un fichier      |");
+   Put_Line("| cp <src> <dst> <nouveau_nom>   : Copie fichier/dossier      |");
+   Put_Line("| mv <src> <dst> <nouveau_nom>   : Déplace/renomme fichier    |");
+   Put_Line("| rm <nom>                        : Supprime fichier/dossier  |");
+   Put_Line("| tar                             : Archive répertoire courant|");
+   Put_Line("| help                            : Affiche cette aide        |");
+   Put_Line("|                                                             |");
+   Put_Line("+-------------------------------------------------------------+");
+
+end Afficher_Aide;
+
+
    procedure Cmd is --Procédure gérant le cmd.
       Commande  : String (1..200);
       LongCommande : Natural;
@@ -58,6 +86,8 @@ package body Affichage_cmd is
       else if Commande = "rm" or Commande = "RM" or Commande = "Rm" then
          Cmd_Faire_Rm(Liste_param, Nb_El);
 
+      else if Commande = "help" or Commande = "HELP" or Commande = "Help" then
+         Afficher_Aide;
 
       else if Commande ="" then
          null;
@@ -65,7 +95,7 @@ package body Affichage_cmd is
 
       else
          Put_Line("Commande inconnue");
-
+      end if;
       end if;
       end if;
       end if;
