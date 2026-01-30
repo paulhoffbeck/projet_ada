@@ -55,6 +55,7 @@ begin
    ------------------------------------------------------------------
    Banniere("TEST 3 : Navigation avec Cd");
    begin
+   -- changement de dossier, vérification avec Pwd
       Cd(Actuel, "/home");
       Put_Line("Cd /home : OK");
       Pwd;
@@ -86,6 +87,7 @@ begin
    ------------------------------------------------------------------
    Banniere("TEST 5 : Retour à la racine");
    begin
+      -- déplacement à dans l'arborescence
       Cd(Actuel, "..");
       Put_Line("Cd .. : OK");
       Pwd;
@@ -107,6 +109,7 @@ begin
    ------------------------------------------------------------------
    Banniere("TEST 7 : Recherche de chemin valide");
    declare
+      -- test de la fonction intermédiaire de recherche de chemin
       Ptr : P_Liste_Contenu;
    begin
       Ptr := Recherche_chemin("/home");
