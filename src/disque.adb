@@ -11,7 +11,7 @@ with Ada.Unchecked_Deallocation;
 package body Disque is
    procedure Free is new Ada.Unchecked_Deallocation(T_Slot, P_Slot);
 
-   procedure Creation(slot : out T_Slot ; taille : in Integer) is
+   procedure Creation(slot : out T_Slot ; taille : in Integer) is --procédure permettant de créer un slot de mémoire lors de la création d'un élément
    place : Boolean := Check_Restant (taille);
    begin
       if place then
@@ -25,7 +25,7 @@ package body Disque is
       end if;
    end Creation;
 
-   procedure Ajouter_Slot(slot : in T_Slot) is
+   procedure Ajouter_Slot(slot : in T_Slot) is -- procédure permettant d'ajouter un slot à la liste des slots quand celui-ci est utilisé
    Actuel : P_Slot := emplacement_origin;
    begin
       while Actuel.all.suivant /= null loop
@@ -34,7 +34,7 @@ package body Disque is
       Actuel.all.suivant := new T_Slot'(slot);
    end Ajouter_Slot;
 
-   procedure Destruction(id : in Integer) is
+   procedure Destruction(id : in Integer) is --procédure permetttant de détruire et déréférencer le slot 
       Cible     : P_Slot := Trouver_Slot(id);
       Actuel    : P_Slot := emplacement_origin;
       Suivant   : P_Slot;
@@ -60,10 +60,10 @@ package body Disque is
       end loop;
    end Destruction;
 
-   procedure Modif(id : in Integer; nouvelle_taille : in Integer) is
-      Cible : P_Slot := Trouver_Slot(id);
+   procedure Modif(id : in Integer; nouvelle_taille : in Integer) is  --procédure permetttant de modifier un slot
       Ancienne : Integer;
       Difference : Integer;
+      Cible : P_Slot :=Trouver_Slot(id);
    begin
       if Cible = null then
          return;
@@ -80,7 +80,7 @@ package body Disque is
    end Modif;
 
 
-   function Trouver_Slot(id : in integer) return P_Slot is
+   function Trouver_Slot(id : in integer) return P_Slot is --fonction permetttant de trouver un slot
       Actuel : P_Slot := emplacement_origin.all.suivant;
    begin
       while Actuel /= null loop
@@ -93,7 +93,7 @@ package body Disque is
    end Trouver_Slot;
 
 
-   function Check_Restant(taille : Integer) return Boolean is
+   function Check_Restant(taille : Integer) return Boolean is --fonction regardant si la taille restante est bonne 
    begin
       return disque_restant >= Long_Integer(taille);
    end Check_Restant;

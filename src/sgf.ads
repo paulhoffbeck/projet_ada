@@ -17,6 +17,7 @@ package SGF is
       Nom    : Unbounded_String;
       Taille : Integer;
       Droits : Integer := 2#000#; -- Droits : read, write, exec 
+      Id: Integer;
    end record;
 
    type T_Liste_Contenu;
@@ -34,6 +35,7 @@ package SGF is
       Droits        : Integer := 2#000#;
       Dossier_Parent : P_Dossier;
       Contenu       : P_Liste_Contenu;
+      Id : Integer;
    end record;
 
    Actuel : aliased P_Dossier;
@@ -53,18 +55,8 @@ package SGF is
 
    -- Création d’un fichier avec le chemin courant
    procedure Touch (Fi: out T_Fichier; Taille : in Integer; Nom : in String; Droits : in Integer);
-
-
-   -- Création d’un fichier avec le chemin en paramètre
-   procedure Touch (Dos : in out T_Dossier; Fi : out T_Fichier;
-                    Nom : in String; Droits : in Integer);
-   -- pre  : Dossier initialisé
-   -- post : Ajoute un fichier au contenu du dossier
-
    -- Modification de la taille d’un fichier
-   procedure Modif_Taille (Chemin : String; Taille : in Integer; Fichier : out T_Fichier);
-   -- pre  : Fichier et dossier existent
-   -- post : Taille modifiée
+
 
    -- Création d’un répertoire
    procedure Mkdir (Chemin : in String; Nom : in String; Droits : in Integer; Parent : in P_Dossier);
@@ -85,10 +77,6 @@ package SGF is
    -- pre  : Dossier initialisé
    -- post : Affiche le contenu du répertoire actuel
 
-   -- Affichage du contenu d’un dossier (ls)
-   procedure Ls (Chemin : in String);
-   -- pre  : Dossier initialisé
-   -- post : Affiche le contenu du répertoire désigné
 
    -- Affichage récursif (ls -r)
    procedure Lsr;
@@ -105,11 +93,6 @@ package SGF is
    -- pre  : Index valide
    -- post : Fichier supprimé
    -- exception : Dossier inexistant
-
-   -- Suppression récursive d’un dossier
-   procedure Rmr (Dos : in out T_Dossier; Chemin : in String);
-   -- pre  : Dossier initialisé
-   -- post : Dossier et sous-dossiers supprimés
 
    -- Déplacement ou renommage d’un fichier
    procedure Mv (Dos : in out T_Dossier; Fichier : in String; Dest : in String; Nom : in String);
