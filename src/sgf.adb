@@ -548,7 +548,6 @@ function Trouver_El_R (Fichier : Boolean; Dossier : P_Dossier;Nom     : String; 
 --fonction qui retourne un pointeur vers le dossier qui contient l'élément (équivalement d'un "précédent")
 Actuel : P_Liste_Contenu := Dossier.all.Contenu;
 begin
-   Put(Boolean'Image(Fichier));  
    while Actuel /= null loop
       if Actuel.all.Est_Fichier then
          if Fichier then

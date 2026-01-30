@@ -31,14 +31,13 @@ package body Affichage is
       Put_Line ("|   4. Changer de répertoire (cd)               |");
       Put_Line ("|   5. Afficher le répertoire (ls)              |");
       Put_Line ("|   6. Afficher le chemin (pwd)                 |");
-      Put_Line ("|   7. Modifier la taille                       |");
-      Put_Line ("|   8. Afficher l'espace restant sur le disque  |");
-      Put_Line ("|   9. Trouver un élément                       |");
-      Put_Line ("|   10. Supprimer un élément                    |");
-      Put_Line ("|   11. Copier un élément                       |");
-      Put_Line ("|   12. Deplacer un élément                     |");
-      Put_Line ("|   13. Archiver le répertoire courant          |");
-      Put_Line ("|   14. Revenir au chois de mode                |");
+      Put_Line ("|   7. Afficher l'espace restant sur le disque  |");
+      Put_Line ("|   8. Trouver un élément                       |");
+      Put_Line ("|   9. Supprimer un élément                     |");
+      Put_Line ("|   10. Copier un élément                       |");
+      Put_Line ("|   11. Deplacer un élément                     |");
+      Put_Line ("|   12. Archiver le répertoire courant          |");
+      Put_Line ("|   13. Revenir au chois de mode                |");
       Put_Line ("|                                               |");
       Put_Line ("|   Entrez votre choix (1-13)                   |");
       Put_Line ("+-----------------------------------------------+");
@@ -99,7 +98,7 @@ package body Affichage is
    LongChemin : Natural;
    begin
       Skip_Line;
-      Put("Chemin du cd");
+      Put_Line("Chemin du cd :");
       Get_Line(Chemin, LongChemin);
       Cd(Actuel,Chemin(1..LongChemin));
    end Faire_Cd;
@@ -178,13 +177,13 @@ package body Affichage is
    L_Nn : Natural;
    begin
    Skip_Line;
-   Put_Line("Quel est le fichier a copier ");
+   Put_Line("Quel est le fichier a copier : ");
    Get_Line(Src, L_Src);
 
-   Put_Line("Quelle est la destination du fichier ");
+   Put_Line("Quelle est la destination du fichier : ");
    Get_Line(Dst,L_Dst);
 
-   Put_Line("Quel est le nom de votre fichier (tapez rien si non)");
+   Put_Line("Quel est le nom de votre fichier (tapez rien si non) :");
    Get_Line(Nn, L_Nn);
 
    Cp(Actuel.all,Src(1..L_Src),Dst(1..L_Src),Nn(1..L_Nn));
@@ -276,21 +275,19 @@ package body Affichage is
          when 6 =>
             Pwd;
             New_Line;
-         when 7 => 
-            Faire_Modif_Taille;
+         when 7 =>
+            Put_Line("Nombre d'octets restants :" & Long_Integer'Image(disque_restant) & " octets");
          when 8 =>
-            Put_Line(Long_Integer'Image(disque_restant));
-         when 9 =>
             Faire_Trouver_El;
-         when 10 =>
+         when 9 =>
             Faire_Supprimer;
-         when 11 => 
+         when 10 => 
             Faire_Copie;
-         when 12 =>
+         when 11 =>
             Faire_Mv;
-         when 13 =>
+         when 12 =>
             Faire_Tar;
-         when 14=>
+         when 13=>
             Faux_Main;
          when others =>
             raise Bad_Choice_Number;

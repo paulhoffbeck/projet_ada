@@ -31,6 +31,11 @@ begin
    Put_Line("| rm <nom>                        : Supprime fichier/dossier  |");
    Put_Line("| tar                             : Archive répertoire courant|");
    Put_Line("| help                            : Affiche cette aide        |");
+   Put_Line("| menu                            : Passer au mode menu       |");
+   Put_Line("| exit                            : Fermer le terminal        |");
+   Put_Line("|                                                             |");
+   Put_Line("|                                                             |");
+   Put_Line("| ! Important ! : Veuillez initialiser le SGF avant tout      |");
    Put_Line("|                                                             |");
    Put_Line("+-------------------------------------------------------------+");
 
@@ -46,7 +51,11 @@ end Afficher_Aide;
          Put(">");
          Get_Line(Commande,LongCommande);
          Trouver_Commande(Commande(1..LongCommande));
+
       end loop;
+      exception 
+         when Sortie =>
+         return;
    end Cmd;
 
    procedure Trouver_Commande(Commandes : in String) is --Procédure redirigeant des paramètres entrés en commande vers les bonnes méthodes
@@ -88,6 +97,15 @@ end Afficher_Aide;
 
       else if Commande = "help" or Commande = "HELP" or Commande = "Help" then
          Afficher_Aide;
+      
+      else if Commande = "exit" or Commande = "EXIT" or Commande = "Exit" then
+         raise Sortie;
+      
+      else if Commande = "menu" or Commande = "MENU" or Commande = "Menu" then
+         Menu;
+
+      else if Commande = "cowsay" or Commande = "COWSAY" or Commande = "Cowsay" then
+         Faire_Fonctionimportante(Liste_param, Nb_El);
 
       else if Commande ="" then
          null;
@@ -95,6 +113,9 @@ end Afficher_Aide;
 
       else
          Put_Line("Commande inconnue");
+      end if;
+      end if;
+      end if;
       end if;
       end if;
       end if;
@@ -253,5 +274,102 @@ end Afficher_Aide;
             raise Incorect_Argument_Number;
          end case;
    end Cmd_Faire_Rm;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   procedure Fonction_importante(Message : in String) is
+   Max_Len : constant Integer := 40;
+   Line     : String(1..Max_Len);
+   Msg_Len  : Integer;
+   Start    : Integer := 1;
+   End_Pos  : Integer;
+   begin
+   loop
+      if Start > Message'Length then
+         exit;
+      end if;
+      End_Pos := Start + Max_Len - 1;
+      if End_Pos > Message'Length then
+         End_Pos := Message'Length;
+      end if;
+
+      Msg_Len := End_Pos - Start + 1;
+      Line(1..Msg_Len) := Message(Start..End_Pos);
+      if Start = 1 then
+         Put ("  ");
+         for I in 1..Msg_Len loop
+            Put ("-");
+         end loop;
+         New_Line;
+      end if;
+
+      Put ("< ");
+      Put (Line(1..Msg_Len));
+      Put_Line (" >");
+
+      if End_Pos = Message'Length then
+         Put ("  ");
+         for I in 1..Msg_Len loop
+            Put ("-");
+         end loop;
+         New_Line;
+      end if;
+
+      Start := End_Pos + 1;
+   end loop;
+   Put_Line("        \   ^__^");
+   Put_Line("         \  (oo)\_______");
+   Put_Line("            (__)\       )\/\");
+   Put_Line("                ||----w |");
+   Put_Line("                ||     ||");
+end Fonction_importante;
+
+procedure Faire_Fonctionimportante(Liste_param : Liste_U_String ; Nb_El : Integer) is
+      Src : string := To_String(Liste_param(2));
+   begin
+
+   Fonction_importante(Src);
+end Faire_Fonctionimportante;
 
 end Affichage_cmd;
